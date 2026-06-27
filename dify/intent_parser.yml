@@ -1,0 +1,20 @@
+# Dify 意图解析工作流
+# 后续在 Dify 平台中可视化编排后导出
+workflow:
+  name: IntentParser
+  version: "1.0"
+  description: >
+    解析用户自然语言出行需求，提取：
+    - 目的地、日期、天数
+    - 人数、预算
+    - 偏好风格（美食/历史文化/自然风光/购物/亲子）
+    - 约束条件（不爬山/不早起/不徒步等）
+    - 体能要求（腿脚不便/正常/高体力）
+  inputs:
+    - name: user_query
+      type: string
+      description: 用户的自然语言出行需求
+  outputs:
+    - name: parsed_intent
+      type: object
+      description: 结构化的出行意图

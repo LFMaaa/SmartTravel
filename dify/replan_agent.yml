@@ -1,0 +1,22 @@
+# Dify 动态重排工作流
+# 后续在 Dify 平台中可视化编排后导出
+workflow:
+  name: ReplanAgent
+  version: "1.0"
+  description: >
+    感知航班延误/天气变化/景区关闭等事件，自动重排受影响行程：
+    1. 影响分析 - 判断事件对原行程的影响范围
+    2. 备选方案生成 - 生成3套替代方案
+    3. 资源锁定 - 通过Redis锁定新方案资源（15分钟TTL）
+    4. 方案推送 - 通过WebSocket推送给用户
+  inputs:
+    - name: original_itinerary
+      type: object
+      description: 原始行程JSON
+    - name: event
+      type: object
+      description: 触发事件（航班延误/天气/景区关闭）
+  outputs:
+    - name: alternatives
+      type: array
+      description: 3套备选方案

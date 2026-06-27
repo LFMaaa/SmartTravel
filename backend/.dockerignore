@@ -1,0 +1,37 @@
+# Python
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.venv
+**/venv
+**/.env
+**/*.pem
+
+# 版本控制
+**/.git
+**/.gitignore
+**/.gitattributes
+
+# IDE
+**/.idea
+**/.vscode
+**/.DS_Store
+
+# Node
+**/node_modules
+**/dist
+
+# 文档
+**/*.md
+!requirements.txt
+
+# 测试
+**/test_*
+**/tests/
+**/__pycache__
+
+# 临时文件
+*.log
+*.tmp
+*.swp
+*.swo

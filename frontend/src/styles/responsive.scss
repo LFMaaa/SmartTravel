@@ -1,0 +1,120 @@
+// ============================================
+// Responsive Breakpoints
+// ============================================
+
+// Mobile-first approach
+
+// Mobile: 375-414px
+@mixin mobile {
+  @media (max-width: 414px) { @content; }
+}
+
+// Tablet: 768px
+@mixin tablet {
+  @media (max-width: 768px) { @content; }
+}
+
+// Small desktop: 1024px
+@mixin desktop-sm {
+  @media (max-width: 1024px) { @content; }
+}
+
+// Desktop: 1440px
+@mixin desktop {
+  @media (max-width: 1440px) { @content; }
+}
+
+// Full HD: 1920px
+@mixin desktop-lg {
+  @media (min-width: 1921px) { @content; }
+}
+
+// ============================================
+// Global Responsive Rules
+// ============================================
+
+@include tablet {
+  .container {
+    padding: 0 var(--space-md);
+  }
+
+  .section {
+    padding: var(--space-2xl) 0;
+  }
+
+  // Stack side-by-side layouts on tablet
+  .split-layout {
+    flex-direction: column !important;
+  }
+
+  // Hide desktop-only elements
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+@include mobile {
+  .container {
+    padding: 0 var(--space-sm);
+  }
+
+  .section {
+    padding: var(--space-xl) 0;
+  }
+
+  // Full-width cards on mobile
+  .card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  // Make buttons full-width on mobile
+  .btn-full-mobile {
+    width: 100%;
+  }
+
+  // Hide tablet/desktop elements
+  .tablet-only,
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+// Show mobile-only elements
+.mobile-only {
+  display: none;
+  @include mobile {
+    display: block;
+  }
+}
+
+// ============================================
+// Accessibility
+// ============================================
+
+// Ensure minimum contrast ratio 4.5:1
+@media (prefers-contrast: high) {
+  body {
+    --color-text-secondary: #444444;
+    --color-text-muted: #666666;
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// Print styles
+@media print {
+  .app-header,
+  .app-footer,
+  .no-print {
+    display: none !important;
+  }
+}

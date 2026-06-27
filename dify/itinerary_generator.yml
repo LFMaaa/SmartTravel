@@ -1,0 +1,23 @@
+# Dify 行程生成工作流
+# 后续在 Dify 平台中可视化编排后导出
+workflow:
+  name: ItineraryGenerator
+  version: "1.0"
+  description: >
+    基于解析后的意图，生成完整行程：
+    1. 知识检索（RAG）- 从POI库检索匹配的景点/酒店/餐厅
+    2. 约束求解 - 确保硬约束满足（预算、禁忌、体能）
+    3. 路线优化 - 高德地图API计算距离，优化每日动线
+    4. 行程组装 - 输出含每日时间轴的JSON行程
+    5. 合理性校验 - 兜底检查行程是否合理
+  inputs:
+    - name: parsed_intent
+      type: object
+      description: 意图解析工作流输出
+    - name: user_preferences
+      type: object
+      description: 用户偏好设置
+  outputs:
+    - name: itinerary_json
+      type: object
+      description: 完整的行程JSON

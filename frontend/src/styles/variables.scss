@@ -1,0 +1,117 @@
+:root {
+  // ============================================
+  // Background — Deep dark slate
+  // ============================================
+  --color-bg: #0a0e1a;
+  --color-bg-alt: #111827;
+  --color-bg-elevated: #1a2235;
+  --color-surface: #111827;
+  --color-surface-hover: #1a2235;
+
+  // ============================================
+  // Primary — Amber gold
+  // ============================================
+  --color-primary: #f59e0b;
+  --color-primary-light: #fbbf24;
+  --color-primary-lighter: rgba(245, 158, 11, 0.08);
+  --color-primary-dark: #d97706;
+
+  // ============================================
+  // Secondary — Sky blue accent
+  // ============================================
+  --color-secondary: #3b82f6;
+  --color-secondary-light: #60a5fa;
+  --color-secondary-lighter: rgba(59, 130, 246, 0.08);
+  --color-secondary-dark: #2563eb;
+
+  // ============================================
+  // Neutral — Light-on-dark text hierarchy
+  // ============================================
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-border: #1e293b;
+  --color-border-light: #1e293b;
+
+  // ============================================
+  // Semantic
+  // ============================================
+  --color-success: #10b981;
+  --color-success-light: rgba(16, 185, 129, 0.1);
+  --color-warning: #f59e0b;
+  --color-warning-light: rgba(245, 158, 11, 0.1);
+  --color-danger: #ef4444;
+  --color-danger-light: rgba(239, 68, 68, 0.1);
+  --color-info: #3b82f6;
+  --color-info-light: rgba(59, 130, 246, 0.1);
+
+  // ============================================
+  // Gradients
+  // ============================================
+  --gradient-primary: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  --gradient-primary-reverse: linear-gradient(225deg, #fbbf24 0%, #f59e0b 100%);
+  --gradient-hero: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  --gradient-card: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  --gradient-warm: linear-gradient(180deg, #111827 0%, #0a0e1a 100%);
+  --gradient-glow: linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(59,130,246,0.08) 100%);
+  --gradient-dark: linear-gradient(135deg, #0a0e1a 0%, #111827 100%);
+  --gradient-accent: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #3b82f6 100%);
+
+  // ============================================
+  // Typography
+  // ============================================
+  --font-family: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', -apple-system, sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 32px;
+  --font-size-3xl: 42px;
+  --font-size-4xl: 56px;
+
+  // ============================================
+  // Spacing
+  // ============================================
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+
+  // ============================================
+  // Radii
+  // ============================================
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  // ============================================
+  // Shadows (dark mode)
+  // ============================================
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
+  --shadow-primary: 0 4px 16px rgba(245, 158, 11, 0.25);
+  --shadow-primary-lg: 0 8px 28px rgba(245, 158, 11, 0.35);
+  --shadow-secondary: 0 4px 16px rgba(59, 130, 246, 0.25);
+  --shadow-secondary-lg: 0 8px 28px rgba(59, 130, 246, 0.35);
+
+  // ============================================
+  // Transitions
+  // ============================================
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  // ============================================
+  // Accent color (used by TrustBar)
+  // ============================================
+  --color-accent: #f59e0b;
+}
