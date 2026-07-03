@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .api.routes import router as itinerary_router
-from .database import init_db, is_db_available
+from .database import init_db, is_db_available, async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,10 +23,20 @@ async def lifespan(app: FastAPI):
     else:
         logger.warning("[Startup] MySQL 不可用，使用内存模式（数据不持久化）")
 
-    # 预检 Dify 状态，避免首次请求阻塞
-    from .dify.client import check_dify_health
-    await check_dify_health()
+    # 预检 LLM 状态，避免首次请求阻塞
+    from .services.llm_service import check_llm_health
+    await check_llm_health()
+
+    # 启动天气监控后台任务
+    from .services.weather_monitor import start_weather_monitor
+    await start_weather_monitor(
+        db_session_factory=async_session_factory if is_db_available() else None,
+        interval_hours=6,
+    )
     yield
+    # 关闭天气监控
+    from .services.weather_monitor import stop_weather_monitor
+    await stop_weather_monitor()
 
 
 app = FastAPI(

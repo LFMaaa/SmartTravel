@@ -33,16 +33,17 @@ const stats = [
 </script>
 
 <style scoped lang="scss">
-$bg-deep: #0a0e1a;
-$bg-card: #111827;
-$brand-amber: #f59e0b;
-$text-primary: #f1f5f9;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-warm: #FAF8F3;
+$bg-white: #FFFFFF;
+$brand-brown: #A68B7A;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
 .trust-section {
   padding: var(--space-3xl) 0;
-  background: $bg-card;
+  background: $bg-white;
   position: relative; overflow: hidden;
 }
 
@@ -85,7 +86,7 @@ $border: #1e293b;
   }
 }
 
-.trust-icon { width: 28px; height: 28px; color: $brand-amber; }
+.trust-icon { width: 28px; height: 28px; color: $brand-brown; }
 
 .trust-value {
   font-size: 30px; font-weight: 800; color: $text-primary;

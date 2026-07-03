@@ -193,18 +193,19 @@ const proFeatures = ['无限行程生成', '动态实时重规划', '深度定�
 </script>
 
 <style scoped lang="scss">
-$bg-deep: #0a0e1a;
-$bg-card: #111827;
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$brand-amber-light: #fbbf24;
-$text-primary: #f1f5f9;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-warm: #FAF8F3;
+$bg-white: #FFFFFF;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-brown-light: #C4A89A;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
 .member-center {
-  background: $bg-deep;
+  background: $bg-warm;
   min-height: 100vh;
 }
 
@@ -215,7 +216,7 @@ $border: #1e293b;
   position: relative; overflow: hidden;
   padding: 64px 24px 56px;
   text-align: center;
-  background: $bg-card;
+  background: $bg-white;
   border-bottom: 1px solid $border;
 }
 
@@ -234,7 +235,7 @@ $border: #1e293b;
   border: 1px solid rgba(245, 158, 11, 0.2);
   border-radius: 20px;
   display: flex; align-items: center; justify-content: center;
-  color: $brand-amber;
+  color: $brand-brown;
 }
 
 .hero-content h1 {
@@ -249,7 +250,7 @@ $border: #1e293b;
   padding: 14px 36px; border: none; border-radius: 14px;
   font-size: 16px; font-weight: 700; font-family: inherit;
   cursor: pointer; color: #0f172a;
-  background: linear-gradient(135deg, $brand-amber-light, $brand-amber);
+  background: linear-gradient(135deg, $brand-brown-light, $brand-brown);
   box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
   display: inline-flex; align-items: center; gap: 8px;
   transition: all 0.3s ease;
@@ -279,14 +280,14 @@ $border: #1e293b;
 .section-overline {
   display: inline-block; font-size: 12px; font-weight: 700;
   letter-spacing: 3px; text-transform: uppercase;
-  color: $brand-amber; margin-bottom: 10px;
+  color: $brand-brown; margin-bottom: 10px;
   background: rgba(245,158,11,0.08); padding: 4px 14px;
   border-radius: 20px; border: 1px solid rgba(245,158,11,0.15);
 }
 .section-title { font-size: 28px; font-weight: 700; color: $text-primary; }
 .section-line {
   width: 48px; height: 3px;
-  background: linear-gradient(90deg, $brand-amber, transparent);
+  background: linear-gradient(90deg, $brand-brown, transparent);
   border-radius: 2px; margin: 14px auto 0;
 }
 
@@ -301,7 +302,7 @@ $border: #1e293b;
 
 .benefit-card {
   padding: 28px 22px;
-  background: $bg-elevated;
+  background: $bg-oat;
   border-radius: 16px;
   border: 1px solid $border;
   text-align: center;
@@ -363,7 +364,7 @@ $border: #1e293b;
 
 // Free card
 .free-card {
-  background: $bg-card;
+  background: $bg-white;
   border: 1px solid $border;
   h3 { color: $text-muted; }
   .compare-price { color: $text-muted; }
@@ -377,8 +378,8 @@ $border: #1e293b;
   border: 1.5px solid rgba(245, 158, 11, 0.4);
   box-shadow: 0 0 50px rgba(245, 158, 11, 0.06), 0 8px 32px rgba(0,0,0,0.4);
 
-  h3 { color: $brand-amber; }
-  .compare-price { color: $brand-amber; }
+  h3 { color: $brand-brown; }
+  .compare-price { color: $brand-brown; }
   .compare-sub { color: $text-secondary; }
   ul li { color: $text-secondary; svg { color: #10b981; } }
 
@@ -392,7 +393,7 @@ $border: #1e293b;
 .pro-ribbon {
   position: absolute; top: 14px; right: -30px;
   padding: 4px 36px;
-  background: $brand-amber;
+  background: $brand-brown;
   color: #0f172a;
   font-size: 11px; font-weight: 700;
   transform: rotate(45deg);
@@ -404,7 +405,7 @@ $border: #1e293b;
   padding: 14px 0; border: none; border-radius: 12px;
   font-size: 16px; font-weight: 700; font-family: inherit;
   cursor: pointer; color: #0f172a;
-  background: linear-gradient(135deg, $brand-amber-light, $brand-amber);
+  background: linear-gradient(135deg, $brand-brown-light, $brand-brown);
   box-shadow: 0 4px 16px rgba(245,158,11,0.25);
   transition: all 0.3s ease;
   &:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(245,158,11,0.4); }

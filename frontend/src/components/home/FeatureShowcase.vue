@@ -37,15 +37,17 @@ const features = [
 </script>
 
 <style scoped lang="scss">
-$bg-deep: #0a0e1a;
-$bg-card: #111827;
-$bg-elevated: #1a2235;
-$text-primary: #f1f5f9;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-warm: #FAF8F3;
+$bg-white: #FFFFFF;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
-.feature-section { padding: var(--space-4xl) 0; background: $bg-deep; }
+.feature-section { padding: var(--space-4xl) 0; background: $bg-warm; }
 .container { max-width: 1000px; margin: 0 auto; padding: 0 var(--space-lg); }
 
 .feature-grid {
@@ -58,7 +60,7 @@ $border: #1e293b;
 .feature-item {
   display: flex; align-items: flex-start; gap: 18px;
   padding: 28px;
-  background: $bg-elevated;
+  background: $bg-oat;
   border-radius: 16px;
   border: 1px solid $border;
   position: relative; overflow: hidden;

@@ -4,14 +4,12 @@
       <!-- Left: Booking List -->
       <div class="booking-section">
         <div class="section-header">
-          <el-button text @click="$router.back()">
-            <el-icon><ArrowLeft /></el-icon>
-            返回
+          <el-button text @click="$router.back()" class="back-btn">
+            <el-icon><ArrowLeft /></el-icon> 返回
           </el-button>
           <h3>预订清单</h3>
         </div>
 
-        <!-- Grouped by resource type -->
         <div v-for="group in bookingGroups" :key="group.type" class="booking-group">
           <div class="group-header" @click="toggleGroup(group.type)">
             <el-icon :size="16">
@@ -42,11 +40,7 @@
 
       <!-- Right: Payment Panel -->
       <div class="payment-section">
-        <ResourceLock
-          :remaining="remaining"
-          :total-duration="900"
-        />
-
+        <ResourceLock :remaining="remaining" :total-duration="900" />
         <PaymentPanel
           :items="costItems"
           :discount="memberDiscount"
@@ -57,22 +51,14 @@
       </div>
     </div>
 
-    <!-- Payment success dialog -->
-    <el-dialog
-      v-model="successVisible"
-      title="支付成功"
-      width="400px"
-      center
-      :close-on-click-modal="false"
-    >
+    <!-- Payment Success Dialog -->
+    <el-dialog v-model="successVisible" title="支付成功" width="400px" center :close-on-click-modal="false">
       <div class="success-content">
-        <el-icon :size="56" class="success-icon"><CircleCheckFilled /></el-icon>
+        <div class="success-icon-wrap">✅</div>
         <h3>预订完成！</h3>
         <p>你的行程相关资源已预订成功</p>
         <div class="success-actions">
-          <el-button type="primary" @click="$router.push('/user/itineraries')">
-            返回我的行程
-          </el-button>
+          <el-button type="primary" @click="$router.push('/user/itineraries')">返回我的行程</el-button>
         </div>
       </div>
     </el-dialog>
@@ -88,9 +74,7 @@ import { paymentAPI } from '@/api/payment'
 import BookingItem from '@/components/payment/BookingItem.vue'
 import PaymentPanel from '@/components/payment/PaymentPanel.vue'
 import ResourceLock from '@/components/payment/ResourceLock.vue'
-import {
-  ArrowLeft, CaretRight, CaretBottom, CircleCheckFilled,
-} from '@element-plus/icons-vue'
+import { ArrowLeft, CaretRight, CaretBottom } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -98,17 +82,14 @@ const userStore = useUserStore()
 const paying = ref(false)
 const successVisible = ref(false)
 
-// Countdown: 15 minutes
 const remaining = ref(900)
 let timer: ReturnType<typeof setInterval> | null = null
 
 const expandedGroups = ref<string[]>(['hotel', 'ticket', 'restaurant'])
 
-// Mock booking data
 const bookingGroups = computed(() => [
   {
-    type: 'hotel',
-    label: '🏨 酒店',
+    type: 'hotel', label: '🏨 酒店',
     items: [
       { id: '1', name: '北京王府井希尔顿酒店', resourceType: 'hotel' as const, price: 1280, status: 'locked' as const, date: '2026-07-01', time: '14:00' },
       { id: '2', name: '成都春熙路亚朵酒店', resourceType: 'hotel' as const, price: 680, status: 'locked' as const, date: '2026-07-04', time: '14:00' },
@@ -116,8 +97,7 @@ const bookingGroups = computed(() => [
     total: 1960,
   },
   {
-    type: 'ticket',
-    label: '🎫 门票',
+    type: 'ticket', label: '🎫 门票',
     items: [
       { id: '3', name: '故宫博物院', resourceType: 'ticket' as const, price: 60, status: 'locked' as const, date: '2026-07-01' },
       { id: '4', name: '八达岭长城', resourceType: 'ticket' as const, price: 40, status: 'pending' as const, date: '2026-07-02' },
@@ -125,8 +105,7 @@ const bookingGroups = computed(() => [
     total: 100,
   },
   {
-    type: 'restaurant',
-    label: '🍜 餐饮',
+    type: 'restaurant', label: '🍜 餐饮',
     items: [
       { id: '5', name: '全聚德烤鸭店（前门店）', resourceType: 'restaurant' as const, price: 300, status: 'locked' as const, date: '2026-07-01', time: '18:00' },
     ],
@@ -141,7 +120,7 @@ const costItems = computed(() => [
   { label: '服务费', amount: 50 },
 ])
 
-const memberDiscount = ref(100) // Mock member discount
+const memberDiscount = ref(100)
 
 const totalAmount = computed(() => {
   const sum = costItems.value.reduce((s, i) => s + i.amount, 0)
@@ -163,7 +142,6 @@ async function handlePay(method: string) {
 
   paying.value = true
   try {
-    // 收集所有预订项
     const items = bookingGroups.value.flatMap(g => g.items.map(item => ({
       resource_type: item.resourceType,
       resource_name: item.name,
@@ -171,7 +149,6 @@ async function handlePay(method: string) {
       quantity: 1,
     })))
 
-    // 调用后端创建预订支付订单
     const { data } = await paymentAPI.createBookingOrder({
       user_id: userStore.user.id,
       total_amount: totalAmount.value,
@@ -182,12 +159,11 @@ async function handlePay(method: string) {
     const result = data.data
 
     if (result.alipay_url) {
-      // 跳转到支付宝沙箱支付页面
+      // 跳转支付宝沙箱支付
       window.location.href = result.alipay_url
-      // 页面即将离开，倒计时会在 unloaded 时自动清理
       return
     } else {
-      // 沙箱模式：模拟支付
+      // 沙箱模式模拟支付
       ElMessage.info('沙箱模式：正在模拟支付...')
       await new Promise(resolve => setTimeout(resolve, 1500))
 
@@ -213,12 +189,10 @@ function handleFindAlternative(item: any) {
 }
 
 onMounted(async () => {
-  // 检查是否从支付宝支付页面返回
   const paid = route.query.paid
   if (paid === '1') {
     successVisible.value = true
     if (timer) clearInterval(timer)
-    // 清除 URL 参数
     router.replace('/itinerary/payment')
     return
   }
@@ -228,69 +202,76 @@ onMounted(async () => {
   }, 1000)
 })
 
-onUnmounted(() => {
-  if (timer) clearInterval(timer)
-})
+onUnmounted(() => { if (timer) clearInterval(timer) })
 </script>
 
 <style scoped lang="scss">
+$bg-warm: #FAF8F3;
+$bg-oat: #F5F0E8;
+$bg-white: #FFFFFF;
+$brand-brown: #A68B7A;
+$brand-nude: #E8D5D0;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
+
 .payment-view {
-  min-height: calc(100vh - 64px);
-  background: var(--color-bg);
-  padding: var(--space-xl) var(--space-lg);
+  min-height: 100vh;
+  background: $bg-warm;
+  padding: 32px 24px;
 }
 
 .payment-container {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
-  gap: var(--space-xl);
+  gap: 24px;
 }
 
 // Left: Booking
-.booking-section {
-  flex: 1.2;
-  min-width: 0;
-}
+.booking-section { flex: 1.2; min-width: 0; }
 
 .section-header {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-lg);
+  gap: 16px;
+  margin-bottom: 24px;
 
-  h3 { font-size: var(--font-size-lg); font-weight: 700; }
+  h3 { font-size: 20px; font-weight: 600; color: $text-primary; }
 }
 
+.back-btn { color: $text-secondary; font-size: 14px; }
+.back-btn:hover { color: $brand-brown; }
+
 .booking-group {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border-light);
-  margin-bottom: var(--space-md);
+  background: $bg-white;
+  border-radius: 16px;
+  border: 1px solid $border;
+  margin-bottom: 12px;
   overflow: hidden;
 }
 
 .group-header {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-md) var(--space-lg);
+  gap: 8px;
+  padding: 16px 20px;
   cursor: pointer;
-  font-size: var(--font-size-sm);
+  font-size: 14px;
   font-weight: 600;
-  color: var(--color-text-primary);
-  transition: background var(--transition-fast);
+  color: $text-primary;
+  transition: background 0.2s;
 
-  &:hover { background: var(--color-bg); }
+  &:hover { background: $bg-oat; }
 }
 
 .group-label { flex: 1; }
-.group-count { color: var(--color-text-muted); font-weight: 400; }
-.group-total { color: var(--color-primary); font-weight: 700; }
+.group-count { color: $text-muted; font-weight: 400; }
+.group-total { color: $brand-brown; font-weight: 700; }
 
-.group-items {
-  padding: 0 var(--space-lg) var(--space-md);
-}
+.group-items { padding: 0 20px 16px; }
 
 // Right: Payment
 .payment-section {
@@ -298,27 +279,24 @@ onUnmounted(() => {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: 20px;
 }
 
 // Success dialog
 .success-content {
   text-align: center;
-  padding: var(--space-lg) 0;
+  padding: 24px 0;
 
-  .success-icon {
-    color: var(--color-success);
-    margin-bottom: var(--space-md);
+  .success-icon-wrap {
+    font-size: 56px;
+    margin-bottom: 16px;
   }
 
-  h3 { font-size: var(--font-size-xl); font-weight: 700; margin-bottom: var(--space-sm); }
-  p { color: var(--color-text-secondary); margin-bottom: var(--space-lg); }
+  h3 { font-size: 20px; font-weight: 700; color: $text-primary; margin-bottom: 8px; }
+  p { color: $text-secondary; margin-bottom: 24px; }
 }
 
-.success-actions {
-  display: flex;
-  justify-content: center;
-}
+.success-actions { display: flex; justify-content: center; }
 
 @media (max-width: 768px) {
   .payment-container { flex-direction: column; }

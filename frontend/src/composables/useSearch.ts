@@ -7,8 +7,8 @@ export function useSearch() {
     return store.search({ keyword, city, poi_type: poiType, page, page_size: pageSize })
   }
 
-  async function suggest(keyword: string) {
-    return store.suggest(keyword)
+  async function suggest(keyword: string, size?: number) {
+    return store.suggest(keyword, size)
   }
 
   return { ...store, search, suggest }

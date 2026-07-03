@@ -19,9 +19,9 @@ defineProps<{ role: 'user' | 'assistant' }>()
 </script>
 
 <style scoped lang="scss">
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$brand-amber-light: #fbbf24;
+$bg-oat: #1a2235;
+$brand-brown: #f59e0b;
+$brand-brown-light: #fbbf24;
 $text-primary: #f1f5f9;
 $border: #1e293b;
 
@@ -50,7 +50,7 @@ $border: #1e293b;
     color: #0f172a; border-bottom-right-radius: 4px;
   }
   &.assistant {
-    background: $bg-elevated; color: $text-primary;
+    background: $bg-oat; color: $text-primary;
     border: 1px solid $border; border-bottom-left-radius: 4px;
   }
 }

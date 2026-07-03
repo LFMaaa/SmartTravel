@@ -130,7 +130,7 @@ onMounted(async () => {
 
 .detail-hero {
   position: relative;
-  background: var(--gradient-dark);
+  background: var(--gradient-warm);
   padding: var(--space-3xl) 0;
   overflow: hidden;
 
@@ -138,8 +138,9 @@ onMounted(async () => {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 40% 60% at 80% 20%, rgba(255, 107, 53, 0.15), transparent),
-      radial-gradient(ellipse 30% 40% at 20% 80%, rgba(247, 168, 0, 0.08), transparent);
+      radial-gradient(ellipse 50% 50% at 70% 30%, rgba(245, 158, 11, 0.08), transparent),
+      radial-gradient(ellipse 40% 40% at 20% 70%, rgba(251, 146, 60, 0.06)),
+      radial-gradient(ellipse 60% 35% at 80% 80%, rgba(217, 119, 6, 0.05), transparent);
   }
 }
 
@@ -159,22 +160,22 @@ onMounted(async () => {
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(180, 140, 100, 0.25);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.6);
+  color: #92400e;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   margin-bottom: var(--space-lg);
   transition: all 0.2s ease;
 
-  svg { flex-shrink: 0; }
+  svg { flex-shrink:  0; }
 
   &:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.22);
+    color: #78350f;
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(180, 140, 100, 0.4);
   }
 
   &:active {
@@ -183,7 +184,7 @@ onMounted(async () => {
 }
 
 .hero-info {
-  color: #fff;
+  color: #422006;
 }
 
 .hero-badge-row {
@@ -195,13 +196,17 @@ onMounted(async () => {
 
 .hero-version {
   font-size: var(--font-size-xs);
-  color: rgba(255, 255, 255, 0.5);
+  color: #b45309;
 }
 
 .hero-title {
   font-size: var(--font-size-3xl);
   font-weight: 800;
   margin-bottom: var(--space-lg);
+  background: linear-gradient(135deg, #92400e 0%, #c2410c 50%, #b45309 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .hero-meta {
@@ -216,11 +221,12 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
   font-size: var(--font-size-sm);
-  color: rgba(255, 255, 255, 0.8);
+  color: #78350f;
 
   &.price {
-    color: var(--color-accent-light);
-    font-weight: 600;
+    color: #c2410c;
+    font-weight: 700;
+    font-size: var(--font-size-base);
   }
 }
 
@@ -253,12 +259,12 @@ onMounted(async () => {
 .hero-action-edit {
   border: none;
   background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #0f172a;
-  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.3);
+  color: #fff;
+  box-shadow: 0 3px 14px rgba(245, 158, 11, 0.35);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+    box-shadow: 0 6px 22px rgba(245, 158, 11, 0.5);
   }
 
   &:active {
@@ -267,14 +273,15 @@ onMounted(async () => {
 }
 
 .hero-action-regen {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.06);
-  color: #e2e8f0;
-  backdrop-filter: blur(4px);
+  border: 1px solid rgba(180, 140, 100, 0.35);
+  background: rgba(255, 255, 255, 0.7);
+  color: #92400e;
+  backdrop-filter: blur(6px);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(180, 140, 100, 0.5);
+    color: #78350f;
     transform: translateY(-2px);
   }
 

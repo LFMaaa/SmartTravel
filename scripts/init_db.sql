@@ -263,3 +263,23 @@ CREATE TABLE IF NOT EXISTS poi (
     INDEX idx_location    (latitude, longitude),
     INDEX idx_popularity  (popularity_score DESC)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- §13. POI 评论/评价表
+-- 用户对景点/酒店/餐厅的评价，支持多级回复（类似抖音评论）
+-- ============================================================
+CREATE TABLE IF NOT EXISTS poi_reviews (
+    id              VARCHAR(36)  PRIMARY KEY,
+    poi_id          VARCHAR(36)  NOT NULL            COMMENT '被评价的 POI ID',
+    user_id         VARCHAR(36)  NOT NULL            COMMENT '评价用户 ID',
+    parent_id       VARCHAR(36)  DEFAULT NULL        COMMENT '父评论 ID（回复时指向被回复的评论，NULL=一级评论）',
+    content         TEXT         NOT NULL            COMMENT '评论内容',
+    rating          TINYINT      DEFAULT NULL        COMMENT '评分 1-5（仅一级评论有评分，回复为 NULL）',
+    likes           INT          DEFAULT 0           COMMENT '点赞数',
+    created_at      DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES poi_reviews(id) ON DELETE CASCADE,
+    INDEX idx_poi (poi_id),
+    INDEX idx_parent (parent_id),
+    INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

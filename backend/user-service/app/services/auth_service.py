@@ -20,10 +20,9 @@ class AuthService:
 
     @staticmethod
     async def register(
-        db: AsyncSession, phone: str, password: str, sms_code: str,
-        redis=None, nickname: str = "",
+        db: AsyncSession, phone: str, password: str, nickname: str = "",
     ) -> User:
-        """手机号+密码注册 — 需要短信验证码验证（Redis 优先 → MySQL 回退）"""
+        """手机号+密码注册 — 仅校验手机号和密码，不需要短信验证码"""
         # 1. 检查手机号是否已注册
         result = await db.execute(select(User).where(User.phone == phone))
         existing = result.scalar_one_or_none()
@@ -38,10 +37,7 @@ class AuthService:
             pref = UserPreference(user_id=user.id)
             db.add(pref)
 
-        # 2. 验证短信验证码（Redis 优先 → MySQL 回退）
-        await AuthService._verify_sms_code_hybrid(user, sms_code, redis)
-
-        # 3. 设置密码
+        # 2. 设置密码
         salt = os.urandom(16).hex()
         user.hashed_password = AuthService._hash_password(password, salt)
         user.salt = salt

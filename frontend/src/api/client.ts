@@ -8,11 +8,13 @@ const client: AxiosInstance = axios.create({
   timeout: 10000,
 })
 
-// 请求拦截器：自动附加 Token
+// 请求拦截器：自动附加 Token（同时支持标准 Bearer 和 x-user-token）
 client.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem('access_token')
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`
+    // 部分服务（如 review-service）通过自定义 header 获取 token
+    config.headers['x-user-token'] = token
   }
   return config
 })

@@ -4,7 +4,9 @@ import type { ItineraryCreateRequest, ItineraryResponse } from '@/types/itinerar
 
 export const itineraryAPI = {
   generate: (query: string, userId?: string, itineraryId?: string) =>
-    client.post<ApiResponse<ItineraryResponse>>('/itinerary/generate', { query, user_id: userId || 'anonymous', itinerary_id: itineraryId || '' }),
+    client.post<ApiResponse<ItineraryResponse>>('/itinerary/generate',
+      { query, user_id: userId || 'anonymous', itinerary_id: itineraryId || '' },
+      { timeout: 60000 }),
 
   generateStream: (query: string) =>
     client.post('/itinerary/generate/stream', { query }, { responseType: 'stream' }),
@@ -22,5 +24,7 @@ export const itineraryAPI = {
     client.get<ApiResponse<PaginatedResponse<ItineraryResponse>>>('/itinerary/', { params: { user_id: userId, page, page_size: pageSize } }),
 
   replan: (itineraryId: string, eventType: string, eventDetail: Record<string, any>) =>
-    client.post(`/itinerary/${itineraryId}/replan`, { itinerary_id: itineraryId, event_type: eventType, event_detail: eventDetail }),
+    client.post(`/itinerary/${itineraryId}/replan`,
+      { itinerary_id: itineraryId, event_type: eventType, event_detail: eventDetail },
+      { timeout: 60000 }),
 }

@@ -46,15 +46,16 @@ const coverImage = computed(() => typeMap[props.poi.type]?.image || '/assets/poi
 </script>
 
 <style scoped lang="scss">
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$text-primary: #f1f5f9;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
 .poi-card {
-  background: $bg-elevated; border-radius: 16px;
+  background: $bg-oat; border-radius: 16px;
   border: 1px solid $border; overflow: hidden; cursor: pointer;
   transition: all 0.3s ease;
   &:hover {
@@ -112,7 +113,7 @@ $border: #1e293b;
 
 .poi-rating {
   display: flex; align-items: center; gap: 3px;
-  color: $brand-amber; font-size: 13px; font-weight: 700; white-space: nowrap;
+  color: $brand-brown; font-size: 13px; font-weight: 700; white-space: nowrap;
 }
 
 .poi-meta {
@@ -123,14 +124,14 @@ $border: #1e293b;
 
 .poi-city { flex: 1; }
 
-.poi-price { font-weight: 600; color: $brand-amber; &.free { color: #10b981; } }
+.poi-price { font-weight: 600; color: $brand-brown; &.free { color: #10b981; } }
 
 .poi-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
 
 .poi-tag {
   padding: 3px 10px; border-radius: 20px;
   font-size: 11px; font-weight: 500;
-  background: rgba(245,158,11,0.08); color: $brand-amber;
+  background: rgba(245,158,11,0.08); color: $brand-brown;
   border: 1px solid rgba(245,158,11,0.12);
 }
 

@@ -19,8 +19,8 @@ export const useSearchStore = defineStore('search', () => {
     }
   }
 
-  async function suggest(keyword: string) {
-    const { data } = await searchAPI.suggest(keyword)
+  async function suggest(keyword: string, size?: number) {
+    const { data } = await searchAPI.suggest(keyword, size)
     return data.data
   }
 

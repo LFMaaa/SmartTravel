@@ -1,10 +1,36 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Query
+from pydantic import BaseModel
 
 from common.schemas import APIResponse
 
 from ..services.push_service import PushService
 
 router = APIRouter()
+
+
+class PushNotificationRequest(BaseModel):
+    user_id: str
+    type: str
+    title: str
+    content: dict
+    resource_type: str = ""
+    resource_id: str = ""
+
+
+@router.post("/push", response_model=APIResponse)
+async def push_notification(req: PushNotificationRequest):
+    """HTTP 推送通知（天气监控等服务调用）"""
+    notification = await PushService.send_to_user(
+        user_id=req.user_id,
+        message={
+            "type": req.type,
+            "title": req.title,
+            "content": req.content,
+            "resource_type": req.resource_type,
+            "resource_id": req.resource_id,
+        },
+    )
+    return APIResponse(data=notification, message="通知已发送")
 
 
 @router.websocket("/ws/{user_id}")

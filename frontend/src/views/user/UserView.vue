@@ -110,20 +110,21 @@ function handleLogout() {
 </script>
 
 <style scoped lang="scss">
-// 暗色主题变量（与其他页面一致）
-$bg-deep: #0a0e1a;
-$bg-card: #111827;
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$text-primary: #f1f5f9;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
-$border-light: rgba(255, 255, 255, 0.06);
+// 大地素雅风变量
+$bg-warm: #FAF8F3;
+$bg-white: #FFFFFF;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
+$border-light: rgba(166, 139, 122, 0.08);
 
 .user-container {
   min-height: calc(100vh - 64px);
-  background: $bg-deep;
+  background: $bg-warm;
   display: flex;
   gap: 24px;
   padding: 24px;
@@ -137,7 +138,7 @@ $border-light: rgba(255, 255, 255, 0.06);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: $bg-card;
+  background: $bg-white;
   border-radius: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   padding: 32px 24px;
@@ -204,7 +205,7 @@ $border-light: rgba(255, 255, 255, 0.06);
     height: 14px;
     background: #48bb78;
     border-radius: 50%;
-    border: 2px solid $bg-card;
+    border: 2px solid $bg-white;
   }
 }
 
@@ -313,7 +314,7 @@ $border-light: rgba(255, 255, 255, 0.06);
 .user-main {
   flex: 1;
   min-width: 0;
-  background: $bg-elevated;
+  background: $bg-oat;
   border-radius: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   padding: 32px;

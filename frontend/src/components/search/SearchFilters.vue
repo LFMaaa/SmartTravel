@@ -38,17 +38,18 @@ function toggleFilter(key: string, value: string) {
 </script>
 
 <style scoped lang="scss">
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-sage: #B8C4B8;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
 .search-filters {
   display: flex; align-items: center; gap: 20px;
   margin-top: 16px; max-width: 640px; margin-left: auto; margin-right: auto;
   padding: 12px 20px;
-  background: $bg-elevated; border-radius: 14px;
+  background: $bg-oat; border-radius: 14px;
   border: 1px solid $border;
   flex-wrap: wrap; justify-content: center;
 }
@@ -69,8 +70,8 @@ $border: #1e293b;
   border-radius: 20px; font-size: 12px; color: $text-secondary;
   cursor: pointer; font-family: inherit;
   transition: all 0.25s ease;
-  &:hover { border-color: $brand-amber; color: $brand-amber; }
-  &.active { background: rgba(245,158,11,0.08); border-color: $brand-amber; color: $brand-amber; font-weight: 600; }
+  &:hover { border-color: $brand-brown; color: $brand-brown; }
+  &.active { background: rgba(245,158,11,0.08); border-color: $brand-brown; color: $brand-brown; font-weight: 600; }
 }
 
 .chip-icon { width: 18px; height: 18px; border-radius: 5px; object-fit: cover; }

@@ -8,7 +8,7 @@
         <div>
           <div class="ai-name">AI 旅行助手</div>
           <div class="ai-status" :class="{ busy: generating }">
-            {{ generating ? '正在规划...' : (difyOnline ? '在线 · Dify' : '在线 · 本地') }}
+            {{ generating ? '正在规划...' : (difyOnline ? '在线 · AI' : '在线 · 本地') }}
           </div>
         </div>
       </div>
@@ -204,7 +204,7 @@ async function handleSend() {
   } catch (err: any) {
     difyOnline.value = false
     const detail = err?.response?.data?.detail || err?.message || '未知错误'
-    errorMsg.value = `生成失败：${detail}（已使用本地引擎兜底，请检查 Dify 服务）`
+    errorMsg.value = `生成失败：${detail}（已使用本地引擎兜底）`
     console.error('[ChatPanel] generate error:', err)
   }
   await nextTick(); scrollToBottom()
@@ -229,7 +229,7 @@ async function applyPlan(alt: any, altIndex: number, msgIndex: number) {
 
     let applyQuery: string
     if (dest && dest !== '默认目的地' && dest !== '未知') {
-      // 有有效目的地 → 构造带完整上下文的请求，让 Dify 正确提取城市+天数+预算
+      // 有有效目的地 → 构造带完整上下文的请求，让 AI 正确提取城市+天数+预算
       applyQuery = `重新规划我的${dest}${daysCount}日行程（总预算约${budget}元），调整原因：${alt.title}。具体要求：${alt.description}。请生成完整的${daysCount}天行程，包含每天的活动安排、餐厅和酒店推荐及价格明细。`
     } else {
       // 无有效目的地时用更直接的请求
@@ -238,7 +238,7 @@ async function applyPlan(alt: any, altIndex: number, msgIndex: number) {
 
     console.log('[ChatPanel] applyPlan query:', applyQuery.substring(0, 120))
 
-    // 调用生成接口，让后端/Dify 根据选择的方案 + 原始行程上下文重新生成
+    // 调用生成接口，让后端 AI 根据选择的方案 + 原始行程上下文重新生成
     const result = await generate(applyQuery, itineraryId)
 
     // 更严格的结果校验 — 必须有实际的 days 数据
@@ -261,7 +261,7 @@ async function applyPlan(alt: any, altIndex: number, msgIndex: number) {
       console.warn('[ChatPanel] applyPlan 返回无效数据:', { dest: rDest, title: rTitle, daysLen: rDays?.length })
       messages.value.push({
         role: 'assistant',
-        content: `⚠️ 应用「${alt.title}」时未能获取到有效的行程数据（可能 Dify 工作流暂时不可用）。建议：直接在输入框描述您的新需求，如「重新规划北京3天行程，把故宫调到第一天」，我将为您生成新方案。`,
+        content: `⚠️ 应用「${alt.title}」时未能获取到有效的行程数据（AI 服务暂时不可用）。建议：直接在输入框描述您的新需求，如「重新规划北京3天行程，把故宫调到第一天」，我将为您生成新方案。`,
       })
     } else {
       // 行程数据有效 — 标记选中状态并更新右侧面板
@@ -310,18 +310,19 @@ function scrollToBottom() {
 </script>
 
 <style scoped lang="scss">
-$bg-deep: #0a0e1a;
-$bg-card: #111827;
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$text-primary: #f1f5f9;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-warm: #FAF8F3;
+$bg-white: #FFFFFF;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
 .chat-panel {
   display: flex; flex-direction: column; height: 100%;
-  background: $bg-card;
+  background: $bg-white;
 }
 
 .chat-header {
@@ -342,7 +343,7 @@ $border: #1e293b;
 }
 
 .ai-name { font-size: 14px; font-weight: 600; color: $text-primary; }
-.ai-status { font-size: 11px; color: #10b981; &.busy { color: $brand-amber; } }
+.ai-status { font-size: 11px; color: #10b981; &.busy { color: $brand-brown; } }
 
 .clear-btn {
   padding: 6px 12px; border: 1px solid $border; border-radius: 8px;
@@ -358,7 +359,7 @@ $border: #1e293b;
 
 .chat-welcome {
   text-align: center; padding: 40px 0;
-  .welcome-icon { color: $brand-amber; opacity: 0.5; margin-bottom: 16px; }
+  .welcome-icon { color: $brand-brown; opacity: 0.5; margin-bottom: 16px; }
   h3 { font-size: 16px; font-weight: 600; color: $text-primary; margin-bottom: 8px; }
   p { font-size: 13px; color: $text-muted; max-width: 260px; margin: 0 auto; line-height: 1.6; }
 }
@@ -387,12 +388,12 @@ $border: #1e293b;
 
 .chat-input-field {
   flex: 1; padding: 12px 16px;
-  background: $bg-elevated; border: 1.5px solid $border;
+  background: $bg-oat; border: 1.5px solid $border;
   border-radius: 12px; outline: none;
   font-size: 14px; color: $text-primary; font-family: inherit;
   transition: border-color 0.25s;
   &::placeholder { color: $text-muted; }
-  &:focus { border-color: $brand-amber; }
+  &:focus { border-color: $brand-brown; }
   &:disabled { opacity: 0.5; }
 }
 
@@ -419,21 +420,21 @@ $border: #1e293b;
 }
 
 .plan-card {
-  background: $bg-elevated;
+  background: $bg-oat;
   border: 1.5px solid $border;
   border-radius: 12px;
   padding: 14px 16px;
   transition: all 0.25s ease;
 
   &:hover {
-    border-color: rgba($brand-amber, 0.4);
-    background: rgba($brand-amber, 0.04);
+    border-color: rgba($brand-brown, 0.4);
+    background: rgba($brand-brown, 0.04);
   }
 
   &.plan-selected {
-    border-color: $brand-amber;
-    background: rgba($brand-amber, 0.08);
-    box-shadow: 0 0 0 1px rgba($brand-amber, 0.15), 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-color: $brand-brown;
+    background: rgba($brand-brown, 0.08);
+    box-shadow: 0 0 0 1px rgba($brand-brown, 0.15), 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 }
 
@@ -472,7 +473,7 @@ $border: #1e293b;
 
 .plan-impact {
   display: flex; align-items: center; gap: 6px;
-  font-size: 12px; color: $brand-amber;
+  font-size: 12px; color: $brand-brown;
   margin-bottom: 12px;
 
   svg { flex-shrink: 0; opacity: 0.85; }

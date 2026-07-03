@@ -1,5 +1,5 @@
 // ============================================
-// SmartTravel Global Styles — Dark Tech Theme
+// SmartTravel Global Styles — Earth & Elegance
 // ============================================
 
 @use 'variables';
@@ -42,7 +42,7 @@ a {
   text-decoration: none;
   transition: color var(--transition-fast);
   &:hover {
-    color: var(--color-primary-light);
+    color: var(--color-primary-dark);
   }
 }
 
@@ -52,7 +52,7 @@ img {
 }
 
 // ============================================
-// Scrollbar — dark
+// Scrollbar — earthy & subtle
 // ============================================
 ::-webkit-scrollbar {
   width: 6px;
@@ -62,10 +62,10 @@ img {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: #D5CFC8;
   border-radius: var(--radius-full);
   &:hover {
-    background: var(--color-text-muted);
+    background: #B8B0A8;
   }
 }
 
@@ -90,10 +90,10 @@ img {
 }
 
 .glass-card {
-  background: rgba(17, 24, 39, 0.72);
+  background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
 }
 
@@ -106,9 +106,9 @@ img {
 .shimmer-bg {
   background: linear-gradient(
     90deg,
-    var(--color-bg-alt) 0%,
-    var(--color-bg-elevated) 50%,
-    var(--color-bg-alt) 100%
+    #F5F0E8 0%,
+    #FFFFFF 50%,
+    #F5F0E8 100%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
@@ -124,24 +124,25 @@ img {
 }
 
 // ============================================
-// Element Plus Fine-tuning — Dark
+// Element Plus Fine-tuning — Earth & Elegance
 // ============================================
 
 .el-button {
   border-radius: var(--radius-md);
   font-weight: 500;
   transition: all var(--transition-base);
+  font-family: var(--font-family);
 
   &--primary {
     background: var(--gradient-primary);
     border: none;
     box-shadow: var(--shadow-primary);
-    color: #0f172a;
+    color: #FFFFFF;
     &:hover {
       background: var(--gradient-primary-reverse);
       transform: translateY(-2px);
       box-shadow: var(--shadow-primary-lg);
-      color: #0f172a;
+      color: #FFFFFF;
     }
     &:active {
       transform: translateY(0);
@@ -156,7 +157,7 @@ img {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-sage);
     outline-offset: 2px;
   }
 }
@@ -176,7 +177,7 @@ img {
   border-radius: var(--radius-md);
   transition: all var(--transition-base);
   box-shadow: none;
-  background: var(--color-bg-elevated);
+  background: var(--color-surface);
   border: 1.5px solid var(--color-border);
 
   &:hover {
@@ -185,8 +186,8 @@ img {
 }
 
 .el-input.is-focus .el-input__wrapper {
-  border-color: var(--color-primary) !important;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1) !important;
+  border-color: var(--color-sage) !important;
+  box-shadow: 0 0 0 3px rgba(184, 196, 184, 0.2) !important;
 }
 
 .el-input__inner {
@@ -255,17 +256,17 @@ img {
 
 .el-pagination .el-pager li.is-active {
   background: var(--gradient-primary);
-  color: #0f172a;
+  color: #FFFFFF;
 }
 
 .el-pagination .el-pager li {
   color: var(--color-text-secondary);
-  background: var(--color-bg-elevated);
+  background: var(--color-bg-alt);
 }
 
 .el-pagination button {
   color: var(--color-text-secondary);
-  background: var(--color-bg-elevated);
+  background: var(--color-bg-alt);
 }
 
 .el-select-dropdown__item.selected {
@@ -278,7 +279,7 @@ img {
 }
 
 .el-loading-spinner .circular circle {
-  stroke: var(--color-primary);
+  stroke: var(--color-sage);
 }
 
 .el-drawer {
@@ -287,14 +288,14 @@ img {
 }
 
 .el-dropdown-menu {
-  background: var(--color-bg-elevated);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
 }
 
 .el-dropdown-menu__item {
   color: var(--color-text-secondary);
   &:hover {
-    background: var(--color-primary-lighter);
+    background: var(--color-secondary-lighter);
     color: var(--color-primary);
   }
 }
@@ -316,20 +317,20 @@ img {
   color: var(--color-text-secondary);
 }
 
-// POI detail dialog — teleported, needs explicit dark styling
+// POI detail dialog
 .poi-detail-dialog.el-dialog {
-  background: #111827;
-  border: 1px solid #1e293b;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 24px 48px rgba(166, 139, 122, 0.12);
   border-radius: 16px;
 }
 .poi-detail-dialog {
   .el-dialog__header { margin-right: 0; padding: 20px 24px 0; }
-  .el-dialog__title { color: #f1f5f9; font-weight: 700; font-size: 18px; }
+  .el-dialog__title { color: var(--color-text-primary); font-weight: 700; font-size: 18px; }
   .el-dialog__body { padding: 16px 24px 24px; }
   .el-dialog__headerbtn { top: 22px; right: 20px; }
   .el-rate__icon { margin-right: 4px; font-size: 18px; }
-  .el-rate__text { color: #f59e0b !important; font-size: 13px; margin-left: 6px; font-weight: 600; }
+  .el-rate__text { color: var(--color-primary) !important; font-size: 13px; margin-left: 6px; font-weight: 600; }
   .el-tag { font-size: 12px; }
 }
 
@@ -341,9 +342,7 @@ img {
   outline-offset: 2px;
 }
 
-// ============================================
-// Fix: el-message-box status icon oversized
-// ============================================
+// Fix: el-message-box status icon
 .el-message-box__status {
   font-size: 24px !important;
   width: 24px !important;
@@ -355,53 +354,43 @@ img {
 }
 
 // ============================================
-// Fix: teleported component icons oversized (el-drawer, el-select, etc.)
-// Element Plus renders these at <body> level where scoped styles don't apply
-// Also adds comprehensive dark-theme support for el-drawer children
+// el-drawer — Earth & Elegance Theme
 // ============================================
 .el-drawer {
-  // ── CSS Variables: nuke all Element Plus light-theme vars ──
   --el-drawer-bg-color: var(--color-surface);
-  --el-input-bg-color: var(--color-bg-elevated);
+  --el-input-bg-color: var(--color-surface);
   --el-input-border-color: var(--color-border);
   --el-input-hover-border-color: var(--color-text-muted);
-  --el-input-focus-border-color: var(--color-primary);
+  --el-input-focus-border-color: var(--color-sage);
   --el-input-text-color: var(--color-text-primary);
   --el-input-placeholder-color: var(--color-text-muted);
   --el-input-icon-color: var(--color-text-secondary);
-  --el-fill-color-blank: var(--color-bg-elevated);
+  --el-fill-color-blank: var(--color-surface);
   --el-border-color: var(--color-border);
   --el-border-color-hover: var(--color-text-muted);
   --el-text-color-primary: var(--color-text-primary);
   --el-text-color-regular: var(--color-text-primary);
   --el-text-color-secondary: var(--color-text-secondary);
   --el-text-color-placeholder: var(--color-text-muted);
-  --el-button-bg-color: rgba(255, 255, 255, 0.05);
-  --el-button-border-color: rgba(255, 255, 255, 0.1);
-  --el-button-text-color: #94a3b8;
+  --el-button-bg-color: var(--color-bg-alt);
+  --el-button-border-color: var(--color-border);
+  --el-button-text-color: var(--color-text-secondary);
   background: var(--color-surface) !important;
 
-  // Header
   .el-drawer__header {
     color: var(--color-text-primary) !important;
-    border-bottom-color: var(--color-border-light) !important;
+    border-bottom-color: var(--color-border) !important;
     margin-bottom: 0;
   }
-
-  // Body
   .el-drawer__body {
     background: var(--color-surface) !important;
     color: var(--color-text-primary);
   }
-
-  // Form labels
   .el-form-item__label {
     color: var(--color-text-secondary) !important;
   }
-
-  // Input wrapper — full dark makeover
   .el-input__wrapper {
-    background: var(--color-bg-elevated) !important;
+    background: var(--color-surface) !important;
     border-radius: 8px !important;
     box-shadow: 0 0 0 1px var(--color-border) inset !important;
     transition: box-shadow 0.25s ease;
@@ -410,21 +399,18 @@ img {
     box-shadow: 0 0 0 1px var(--color-text-muted) inset !important;
   }
   .el-input__wrapper.is-focus {
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35) inset !important;
+    box-shadow: 0 0 0 2px rgba(184, 196, 184, 0.35) inset !important;
   }
   .el-input__inner {
     color: var(--color-text-primary) !important;
     &::placeholder { color: var(--color-text-muted) !important; }
   }
-  // Clearable × button
   .el-input__clear {
     color: var(--color-text-muted) !important;
     &:hover { color: var(--color-text-secondary) !important; }
   }
-
-  // Textarea
   .el-textarea__inner {
-    background: var(--color-bg-elevated) !important;
+    background: var(--color-surface) !important;
     color: var(--color-text-primary) !important;
     border-radius: 8px !important;
     box-shadow: 0 0 0 1px var(--color-border) inset !important;
@@ -432,34 +418,25 @@ img {
     transition: box-shadow 0.25s ease;
     &::placeholder { color: var(--color-text-muted) !important; }
     &:hover { box-shadow: 0 0 0 1px var(--color-text-muted) inset !important; }
-    &:focus { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35) inset !important; }
+    &:focus { box-shadow: 0 0 0 2px rgba(184, 196, 184, 0.35) inset !important; }
   }
-
-  // Select
   .el-select__wrapper {
-    background: var(--color-bg-elevated) !important;
+    background: var(--color-surface) !important;
     border-radius: 8px !important;
     box-shadow: 0 0 0 1px var(--color-border) inset !important;
     transition: box-shadow 0.25s ease;
     &:hover { box-shadow: 0 0 0 1px var(--color-text-muted) inset !important; }
-    &.is-focused { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35) inset !important; }
+    &.is-focused { box-shadow: 0 0 0 2px rgba(184, 196, 184, 0.35) inset !important; }
   }
   .el-select__caret {
     font-size: var(--font-size-sm) !important;
     svg { width: 14px !important; height: 14px !important; }
   }
   .el-select__placeholder { color: var(--color-text-muted) !important; }
-
-  // Input-number
-  .el-input-number {
-    .el-input__wrapper {
-      background: var(--color-bg-elevated) !important;
-    }
-  }
   .el-input-number__decrease, .el-input-number__increase {
     width: 32px !important;
     height: 100% !important;
-    background: rgba(255, 255, 255, 0.04) !important;
+    background: var(--color-surface) !important;
     border: none !important;
     border-left: 1px solid var(--color-border) !important;
     color: var(--color-text-secondary) !important;
@@ -467,106 +444,75 @@ img {
     transition: background 0.2s ease, color 0.2s ease;
     &:hover {
       color: var(--color-primary) !important;
-      background: rgba(245, 158, 11, 0.12) !important;
+      background: var(--color-primary-lighter) !important;
     }
-    svg {
-      width: 13px !important;
-      height: 13px !important;
-    }
+    svg { width: 13px !important; height: 13px !important; }
   }
   .el-input-number__decrease {
     border-right: 1px solid var(--color-border) !important;
     border-left: none !important;
   }
-
-  // Icons
-  .el-input__suffix, .el-input__prefix {
-    svg { width: 14px !important; height: 14px !important; }
-  }
-  .el-input__suffix-inner > .el-icon { font-size: 14px !important; }
-
-  // Tags inside input prefix
-  .el-input__prefix .el-tag {
-    margin-top: 0 !important;
-  }
-
-  // Footer
   .el-drawer__footer {
-    border-top-color: var(--color-border-light) !important;
+    border-top-color: var(--color-border) !important;
     padding: 16px 20px;
   }
-
-  // Close button
   .el-drawer__close-btn {
-    width: 32px !important;
-    height: 32px !important;
+    width: 32px !important; height: 32px !important;
     border-radius: 8px;
     color: var(--color-text-muted) !important;
     transition: all 0.2s ease;
-    svg {
-      width: 18px !important;
-      height: 18px !important;
-    }
+    svg { width: 18px !important; height: 18px !important; }
     &:hover {
       color: var(--color-text-primary) !important;
-      background: rgba(255, 255, 255, 0.06);
+      background: var(--color-bg-alt);
     }
   }
-
-  // Buttons inside drawer
   .el-button {
     &.el-button--default {
-      --el-button-bg-color: rgba(255, 255, 255, 0.05);
-      --el-button-border-color: rgba(255, 255, 255, 0.1);
-      --el-button-text-color: #94a3b8;
-      --el-button-hover-text-color: #e2e8f0;
-      --el-button-hover-border-color: rgba(255, 255, 255, 0.18);
-      --el-button-hover-bg-color: rgba(255, 255, 255, 0.08);
+      --el-button-bg-color: var(--color-bg-alt);
+      --el-button-border-color: var(--color-border);
+      --el-button-text-color: var(--color-text-secondary);
+      --el-button-hover-text-color: var(--color-text-primary);
+      --el-button-hover-border-color: var(--color-border);
+      --el-button-hover-bg-color: var(--color-bg-alt);
     }
     &.el-button--primary {
       font-weight: 600;
-      background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+      background: var(--gradient-primary) !important;
       border-color: transparent !important;
-      color: #0f172a !important;
+      color: #FFFFFF !important;
       &:hover {
-        background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+        background: var(--gradient-primary-reverse) !important;
       }
     }
   }
 }
 
-// Select dropdown — needs dark styling too (also teleported)
+// Select dropdown
 .el-select-dropdown {
-  .el-select-dropdown__item { font-size: var(--font-size-sm); }
-  background: var(--color-bg-elevated) !important;
+  background: var(--color-surface) !important;
   border-color: var(--color-border) !important;
-
   .el-select-dropdown__item {
     color: var(--color-text-primary) !important;
-    &.hover, &:hover { background: var(--color-primary-lighter) !important; }
+    font-size: var(--font-size-sm);
+    &.hover, &:hover { background: var(--color-secondary-lighter) !important; }
     &.selected { color: var(--color-primary) !important; font-weight: 600; }
   }
-
-  // Option emoji
-  .el-select-dropdown__wrap { background: var(--color-bg-elevated); }
+  .el-select-dropdown__wrap { background: var(--color-surface); }
 }
 
-// ============================================
-// Fix: el-loading mask in dark theme — suppress white overlay
-// ============================================
+// Loading mask
 .el-loading-mask {
-  background-color: rgba(10, 14, 26, 0.6) !important; // dark overlay
+  background-color: rgba(250, 248, 243, 0.6) !important;
   .el-loading-spinner .el-loading-text {
     color: var(--color-text-secondary) !important;
   }
   .circular circle {
-    stroke: var(--color-primary) !important;
+    stroke: var(--color-sage) !important;
   }
 }
 
-// ============================================
-// Fix: el-pagination layout broken — force flex row
-// ============================================
+// Pagination
 .el-pagination {
   display: flex !important;
   flex-direction: row !important;
@@ -579,7 +525,6 @@ img {
     align-items: center !important;
     gap: 4px;
   }
-
   .btn-prev, .btn-next {
     display: inline-flex !important;
     align-items: center !important;

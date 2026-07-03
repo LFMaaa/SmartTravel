@@ -158,14 +158,29 @@
                     <span class="column-day-badge">Day {{ day.day_index }}</span>
                     <span v-if="day.date" class="column-date">{{ day.date }}</span>
                     <span class="column-weather" v-if="day.date">
-                      <svg viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9z" clip-rule="evenodd"/></svg>
-                      22°C
+                      <!-- 晴 -->
+                      <svg v-if="dayWeatherIcon(day.date) === 'sunny'" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" width="13" height="13"><circle cx="10" cy="10" r="3"/><path d="M10 2v2M10 16v2M18 10h2M0 10h2M15.7 4.3l1.4-1.4M2.9 17l1.4-1.4M15.7 15.7l1.4 1.4M2.9 3l1.4 1.4"/></svg>
+                      <!-- 多云 -->
+                      <svg v-else-if="dayWeatherIcon(day.date) === 'cloudy' || dayWeatherIcon(day.date) === 'partly-cloudy'" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" width="13" height="13"><path d="M5 14a3 3 0 01-.6-5.9A4.5 4.5 0 0114 8h.5a3.5 3.5 0 010 6H5z"/></svg>
+                      <!-- 阴 -->
+                      <svg v-else-if="dayWeatherIcon(day.date) === 'overcast'" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" width="13" height="13"><path d="M4 14a3 3 0 010-5.9A4.5 4.5 0 0113 8h1a3 3 0 010 6H4z"/></svg>
+                      <!-- 小雨/中雨/大雨/阵雨 -->
+                      <svg v-else-if="['light-rain','moderate-rain','heavy-rain','shower'].includes(dayWeatherIcon(day.date))" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" width="13" height="13"><path d="M5 10a3 3 0 01-.6-5.9A4.5 4.5 0 0114 7h.5a3 3 0 010 5H5z"/><line x1="8" y1="14" x2="7" y2="17"/><line x1="12" y1="14" x2="11" y2="17"/></svg>
+                      <!-- 雷暴/雷阵雨 -->
+                      <svg v-else-if="['thunder','storm'].includes(dayWeatherIcon(day.date))" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" width="13" height="13"><path d="M5 10a3 3 0 01-.6-5.9A4.5 4.5 0 0114 7h.5a3 3 0 010 5H5z"/><path d="M10 13l-2 3h3l-1.5 3"/><line x1="7" y1="15" x2="6.5" y2="17"/></svg>
+                      <!-- 雪（小雪/中雪/大雪） -->
+                      <svg v-else-if="['light-snow','moderate-snow','heavy-snow','blizzard'].includes(dayWeatherIcon(day.date))" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" width="13" height="13"><path d="M5 10a3 3 0 01-.6-5.9A4.5 4.5 0 0114 7h.5a3 3 0 010 5H5z"/><circle cx="8" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="11" cy="17" r="1" fill="currentColor" stroke="none"/><circle cx="13" cy="14.5" r="0.8" fill="currentColor" stroke="none"/></svg>
+                      <!-- 雾/霾 -->
+                      <svg v-else-if="['fog','haze','dust'].includes(dayWeatherIcon(day.date))" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" width="13" height="13"><path d="M3 8h14M4 12h12M6 16h8"/></svg>
+                      <!-- 默认太阳 -->
+                      <svg v-else viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" width="13" height="13"><circle cx="10" cy="10" r="3"/><path d="M10 2v2M10 16v2M18 10h2M0 10h2M15.7 4.3l1.4-1.4M2.9 17l1.4-1.4M15.7 15.7l1.4 1.4M2.9 3l1.4 1.4"/></svg>
+                      {{ dayTemp(day.date) }}
                     </span>
                   </div>
-                  <el-button text size="small" class="column-add-btn" @click="addActivity(dayIndex)" title="添加活动">
-                    <el-icon><Plus /></el-icon>
-                    <span>添加</span>
-                  </el-button>
+                  <button class="column-add-btn" @click="addActivity(dayIndex)" title="添加活动">
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" width="14" height="14"><path d="M10 5v10M5 10h10"/></svg>
+                    <span>添加活动</span>
+                  </button>
                 </div>
 
                 <div class="column-activities">
@@ -178,6 +193,7 @@
                     ghost-class="sortable-ghost"
                     drag-class="sortable-drag"
                     chosen-class="sortable-chosen"
+                    @start="onDragStart"
                     @change="onDragChange"
                   >
                     <template #item="{ element: activity }">
@@ -239,6 +255,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useItineraryEdit } from '@/composables/useItineraryEdit'
 import { useBudget } from '@/composables/useBudget'
+import { useWeather } from '@/composables/useWeather'
 import { useItineraryStore } from '@/stores/itinerary'
 import type { ItineraryResponse, DayItinerary, ActivityItem } from '@/types/itinerary'
 import DragActivity from '@/components/itinerary/DragActivity.vue'
@@ -246,13 +263,13 @@ import VersionSelector from '@/components/itinerary/VersionSelector.vue'
 import ActivityDrawer from '@/components/itinerary/ActivityDrawer.vue'
 import draggable from 'vuedraggable'
 import {
-  Plus, Moon, WarningFilled,
+  Moon, WarningFilled,
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
 const itineraryStore = useItineraryStore()
-const { undoStack, redoStack, undo, redo, addActivity: editAddActivity, removeActivity: editRemoveActivity } = useItineraryEdit()
+const { undoStack, redoStack, undo, redo, pushUndo, addActivity: editAddActivity, removeActivity: editRemoveActivity } = useItineraryEdit()
 
 const itinerary = ref<ItineraryResponse | null>(null)
 const currentDays = ref<DayItinerary[]>([])
@@ -260,6 +277,9 @@ const loading = ref(false)
 const saving = ref(false)
 
 const { currentTotal, avgPerDay, overBudget, overAmount, checkBudget, budgetStatusColor } = useBudget(currentDays)
+
+// 天气数据
+const { loadWeather, getWeatherByDate, getWeatherIcon, getTempDisplay, getWeatherText } = useWeather()
 
 // Drawer state
 const drawerVisible = ref(false)
@@ -279,9 +299,9 @@ const budgetPercent = computed(() => {
 })
 const budgetMeterGradient = () => {
   const p = budgetPercent.value
-  if (p > 100) return 'linear-gradient(90deg, #ef4444, #f87171)'
-  if (p > 80) return 'linear-gradient(90deg, #f59e0b, #fbbf24)'
-  return 'linear-gradient(90deg, #10b981, #34d399)'
+  if (p > 100) return 'linear-gradient(90deg, #c99292, #d4a8a8)'
+  if (p > 80) return 'linear-gradient(90deg, var(--color-primary), var(--color-primary-light))'
+  return 'linear-gradient(90deg, var(--color-sage), #c5d4bc)'
 }
 
 onMounted(async () => {
@@ -292,7 +312,12 @@ onMounted(async () => {
     currentDays.value = JSON.parse(JSON.stringify(result.days || []))
     activeVersion.value = result.version || 1
     versionList.value = [{ version: result.version || 1, created_at: result.updated_at || '', summary: '当前版本' }]
+    pushUndo(currentDays.value)
     checkBudget()
+    // 根据目的地城市加载真实天气预报
+    if (result.destination) {
+      loadWeather(result.destination)
+    }
   }
   loading.value = false
 })
@@ -307,23 +332,37 @@ function removeActivityByRef(dayIndex: number, target: ActivityItem) {
   if (!day) return
   const idx = day.activities.findIndex(a => a.id === target.id)
   if (idx >= 0) {
+    pushUndo(currentDays.value)
     currentDays.value = editRemoveActivity(currentDays.value, dayIndex, idx)
     checkBudget()
   }
 }
 
 function removeActivity(dayIndex: number, actIndex: number) {
+  pushUndo(currentDays.value)
   currentDays.value = editRemoveActivity(currentDays.value, dayIndex, actIndex)
   checkBudget()
 }
 
+// 拖拽开始前保存快照
+let preDragState: DayItinerary[] | null = null
+function onDragStart() {
+  preDragState = JSON.parse(JSON.stringify(currentDays.value))
+}
+
 // vuedraggable change handler
 function onDragChange() {
-  // SortableJS already mutates the array via v-model, just recalculate budget
+  if (preDragState) {
+    // 把拖拽前的状态推入撤销栈
+    undoStack.value.push(preDragState)
+    redoStack.value = []
+    preDragState = null
+  }
   checkBudget()
 }
 
 function addHotel(dayIndex: number) {
+  pushUndo(currentDays.value)
   const hotel: ActivityItem = {
     id: `hotel-${Date.now()}`, type: 'hotel', name: '新酒店', description: '',
     address: '', lat: 0, lng: 0, start_time: '', end_time: '', price: 0, tags: [], notes: '',
@@ -333,6 +372,7 @@ function addHotel(dayIndex: number) {
 }
 
 function removeHotel(dayIndex: number) {
+  pushUndo(currentDays.value)
   currentDays.value[dayIndex].hotel = null
   checkBudget()
 }
@@ -344,19 +384,20 @@ function openDrawer(activity: ActivityItem) {
 
 function handleActivitySave(activity: ActivityItem) {
   // Find and update or add activity
-  // Simplified: add to first day
   if (currentDays.value.length > 0) {
     const existingIdx = currentDays.value[0].activities.findIndex(a => a.id === activity.id)
+    pushUndo(currentDays.value)
     if (existingIdx >= 0) {
       currentDays.value[0].activities[existingIdx] = activity
     } else {
       currentDays.value[0].activities.push(activity)
     }
+    checkBudget()
   }
-  checkBudget()
 }
 
 function handleActivityReplace(oldAct: ActivityItem, newAct: ActivityItem) {
+  pushUndo(currentDays.value)
   for (const day of currentDays.value) {
     const idx = day.activities.findIndex(a => a.id === oldAct.id)
     if (idx >= 0) {
@@ -399,6 +440,17 @@ function handleRedo() {
 function goToPayment() {
   router.push({ name: 'payment', params: { orderId: route.params.id } })
 }
+
+// ── 天气辅助方法（模板中使用） ──
+function dayWeatherIcon(date: string | null): string {
+  const w = getWeatherByDate(date)
+  return getWeatherIcon(w)
+}
+
+function dayTemp(date: string | null): string {
+  const w = getWeatherByDate(date)
+  return getTempDisplay(w)
+}
 </script>
 
 <style scoped lang="scss">
@@ -430,11 +482,10 @@ function goToPayment() {
   justify-content: space-between;
   padding: 0 var(--space-lg);
   height: 52px;
-  background: linear-gradient(180deg, rgba(17, 24, 39, 0.95), rgba(17, 24, 39, 0.85));
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--color-bg) 100%);
   border-bottom: 1px solid var(--color-border-light);
   flex-shrink: 0;
   gap: var(--space-md);
-  backdrop-filter: blur(8px);
 }
 
 .toolbar-left {
@@ -472,14 +523,14 @@ function goToPayment() {
 }
 
 .meta-dot {
-  color: #475569;
+  color: var(--color-primary-light);
   font-weight: 700;
 }
 
 .toolbar-center {
   display: flex;
   gap: 2px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--color-bg-alt);
   border-radius: 10px;
   padding: 3px;
   flex-shrink: 0;
@@ -493,7 +544,7 @@ function goToPayment() {
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -502,8 +553,8 @@ function goToPayment() {
   svg { flex-shrink: 0; }
 
   &:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.08);
-    color: #e2e8f0;
+    background: var(--color-surface);
+    color: var(--color-primary);
   }
 
   &:disabled {
@@ -520,19 +571,19 @@ function goToPayment() {
 
 .toolbar-cancel-btn {
   padding: 6px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border-light);
   border-radius: 9px;
-  background: transparent;
-  color: #94a3b8;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.2);
-    color: #e2e8f0;
-    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--color-primary-light);
+    color: var(--color-primary);
+    background: var(--color-bg-alt);
   }
 }
 
@@ -543,19 +594,19 @@ function goToPayment() {
   padding: 6px 16px;
   border: none;
   border-radius: 9px;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #0f172a;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 2px 8px rgba(166, 139, 122, 0.25);
 
   svg { flex-shrink: 0; }
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    box-shadow: 0 4px 14px rgba(166, 139, 122, 0.35);
   }
 
   &:disabled {
@@ -569,8 +620,8 @@ function goToPayment() {
   display: inline-block;
   width: 13px;
   height: 13px;
-  border: 2px solid rgba(15, 23, 42, 0.3);
-  border-top-color: #0f172a;
+  border: 2px solid rgba(166, 139, 122, 0.3);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -625,7 +676,8 @@ function goToPayment() {
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-primary-light);
+    box-shadow: 0 2px 8px rgba(166, 139, 122, 0.08);
   }
 }
 
@@ -640,16 +692,16 @@ function goToPayment() {
   color: #fff;
 }
 
-.days-icon { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
-.budget-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-.avg-icon { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+.days-icon { background: linear-gradient(135deg, var(--color-sage), #9aaf8e); }
+.budget-icon { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); }
+.avg-icon { background: linear-gradient(135deg, var(--color-nude-pink), #d4b8ae); }
 .status-icon {
-  background: #334155;
-  &.status-draft { background: #475569; }
-  &.status-planned { background: linear-gradient(135deg, #f59e0b, #d97706); }
-  &.status-in_progress { background: linear-gradient(135deg, #10b981, #059669); }
-  &.status-completed { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-  &.status-cancelled { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  background: var(--color-bg-alt);
+  &.status-draft { background: var(--color-oat); }
+  &.status-planned { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); }
+  &.status-in_progress { background: linear-gradient(135deg, var(--color-sage), #9aaf8e); }
+  &.status-completed { background: linear-gradient(135deg, #7ba3b8, #5a8fa5); }
+  &.status-cancelled { background: linear-gradient(135deg, #c99292, #b07777); }
 }
 
 .stat-info {
@@ -696,7 +748,7 @@ function goToPayment() {
 .budget-meter-track {
   width: 100%;
   height: 5px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--color-bg-alt);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -746,25 +798,25 @@ function goToPayment() {
 }
 
 .action-save {
-  background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-light);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--color-bg-alt);
+    border-color: var(--color-primary-light);
     transform: translateY(-1px);
   }
 }
 
 .action-book {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #0f172a;
-  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.2);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(166, 139, 122, 0.25);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
+    box-shadow: 0 4px 18px rgba(166, 139, 122, 0.35);
   }
 
   &:active { transform: translateY(0); }
@@ -772,13 +824,13 @@ function goToPayment() {
 
 .action-share {
   background: transparent;
-  color: #94a3b8;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-light);
 
   &:hover {
-    color: #e2e8f0;
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--color-primary);
+    background: var(--color-bg-alt);
+    border-color: var(--color-primary-light);
   }
 }
 
@@ -790,14 +842,14 @@ function goToPayment() {
   overflow-x: auto;
   overflow-y: hidden;
   padding: var(--space-lg);
-  background: linear-gradient(180deg, var(--color-bg) 0%, #080c16 100%);
+  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-alt) 100%);
 }
 
 .day-columns {
   display: flex;
   gap: var(--space-lg);
   height: 100%;
-  min-width: max-content;
+  justify-content: flex-start; /* Columns align left but panel fills width */
 }
 
 .day-column {
@@ -809,11 +861,11 @@ function goToPayment() {
   border-radius: 14px;
   border: 1px solid var(--color-border-light);
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 12px rgba(166, 139, 122, 0.08);
   transition: box-shadow 0.3s ease;
 
   &:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 20px rgba(166, 139, 122, 0.16);
   }
 }
 
@@ -823,7 +875,7 @@ function goToPayment() {
   justify-content: space-between;
   padding: 12px 16px;
   border-bottom: 1px solid var(--color-border-light);
-  background: rgba(255, 255, 255, 0.015);
+  background: var(--color-bg-alt);
 }
 
 .column-title {
@@ -850,30 +902,75 @@ function goToPayment() {
 }
 
 .column-weather {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   font-size: 11px;
-  color: var(--color-info);
+  font-weight: 600;
+  color: var(--color-primary);
   white-space: nowrap;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--color-primary-lighter);
+  transition: all 0.2s ease;
 
-  svg { flex-shrink: 0; opacity: 0.7; }
+  svg {
+    flex-shrink: 0;
+    stroke: var(--color-primary) !important;
+    opacity: 0.85;
+  }
+
+  &:hover {
+    background: rgba(166, 139, 122, 0.18);
+  }
 }
 
 .column-add-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 3px !important;
-  padding: 4px 10px !important;
-  border-radius: 7px !important;
-  color: var(--color-text-secondary) !important;
-  font-size: 11px !important;
+  gap: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 11px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  font-family: inherit;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: all 0.25s ease;
+
+  svg {
+    flex-shrink: 0;
+    stroke: currentColor;
+    transition: transform 0.2s ease;
+  }
+
+  span {
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.3s ease, margin 0.3s ease, opacity 0.25s ease;
+    opacity: 0;
+  }
 
   &:hover {
-    color: var(--color-primary) !important;
-    background: rgba(245, 158, 11, 0.08) !important;
+    opacity: 1;
+    color: var(--color-primary);
+    background: var(--color-primary-lighter);
+
+    svg { transform: rotate(90deg); }
+
+    span {
+      max-width: 60px;
+      margin-left: 4px;
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: scale(0.94);
   }
 }
 
@@ -899,7 +996,7 @@ function goToPayment() {
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--color-primary-lighter);
     border-radius: 2px;
   }
 }
@@ -908,7 +1005,7 @@ function goToPayment() {
 .hotel-slot {
   flex-shrink: 0;
   padding: 10px 12px 12px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  border-top: 1px dashed var(--color-border-light);
 }
 
 .hotel-slot-empty {
@@ -916,7 +1013,7 @@ function goToPayment() {
   justify-content: center;
   padding-top: 6px;
   padding-bottom: 14px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+  border-top: 1px dashed var(--color-border-light);
 }
 
 .hotel-label {

@@ -18,7 +18,6 @@ router = APIRouter()
 class RegisterRequest(BaseModel):
     phone: str
     password: str
-    sms_code: str
     nickname: str = ""
 
 
@@ -76,9 +75,9 @@ async def register(
     db: AsyncSession = Depends(get_db),
     redis=Depends(get_redis),
 ):
-    """手机号+密码注册 — 短信验证码校验通过后创建账号"""
+    """手机号+密码注册 — 仅校验手机号格式和密码，创建账号"""
     user = await AuthService.register(
-        db, req.phone, req.password, req.sms_code, redis, req.nickname
+        db, req.phone, req.password, req.nickname
     )
     return APIResponse(
         data=RegisterResponse(phone=user.phone, message="注册成功，请登录")

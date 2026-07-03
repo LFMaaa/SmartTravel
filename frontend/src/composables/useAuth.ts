@@ -14,10 +14,10 @@ export function useAuth() {
     }
   }
 
-  async function register(phone: string, password: string, smsCode: string, nickname: string) {
+  async function register(phone: string, password: string, nickname: string) {
     loading.value = true
     try {
-      return await store.register(phone, password, smsCode, nickname)
+      return await store.register(phone, password, nickname)
     } finally {
       loading.value = false
     }

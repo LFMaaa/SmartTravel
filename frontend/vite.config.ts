@@ -32,6 +32,10 @@ export default defineConfig({
         target: 'http://localhost:8005',
         changeOrigin: true,
       },
+      '/api/v1/review': {
+        target: 'http://localhost:8007',
+        changeOrigin: true,
+      },
       '/ws': {
         target: 'ws://localhost:8005',
         ws: true,

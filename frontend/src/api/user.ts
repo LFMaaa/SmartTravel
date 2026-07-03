@@ -2,9 +2,9 @@ import client from './client'
 import type { ApiResponse, TokenResponse, RegisterResponse, UserInfo } from '@/types/common'
 
 export const userAPI = {
-  // Password auth — register requires SMS verification code
-  register: (phone: string, password: string, smsCode: string, nickname = '') =>
-    client.post<ApiResponse<RegisterResponse>>('/user/register', { phone, password, sms_code: smsCode, nickname }),
+  // Password auth — register with phone + password only
+  register: (phone: string, password: string, nickname = '') =>
+    client.post<ApiResponse<RegisterResponse>>('/user/register', { phone, password, nickname }),
 
   login: (phone: string, password: string) =>
     client.post<ApiResponse<TokenResponse>>('/user/login', { phone, password }),

@@ -47,7 +47,7 @@ function handleBack() {
 
 .editor-accent-bar {
   height: 3px;
-  background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 40%, #3b82f6 100%);
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-nude-pink) 40%, var(--color-sage) 100%);
   flex-shrink: 0;
   opacity: 0.85;
 }
@@ -58,7 +58,7 @@ function handleBack() {
   gap: var(--space-md);
   padding: 0 var(--space-lg);
   height: 56px;
-  background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg) 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--color-bg) 100%);
   border-bottom: 1px solid var(--color-border-light);
   flex-shrink: 0;
 }
@@ -68,10 +68,10 @@ function handleBack() {
   align-items: center;
   gap: 5px;
   padding: 6px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border-light);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
-  color: #94a3b8;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -81,9 +81,9 @@ function handleBack() {
   svg { flex-shrink: 0; opacity: 0.7; transition: transform 0.22s ease; }
 
   &:hover {
-    color: #e2e8f0;
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.15);
+    color: var(--color-primary);
+    background: var(--color-bg-alt);
+    border-color: var(--color-primary-light);
 
     svg {
       opacity: 1;

@@ -13,12 +13,13 @@ const prompts = ['周末两天去哪里玩？', '带爸妈去北京4天', '蜜�
 </script>
 
 <style scoped lang="scss">
-$bg-deep: #0a0e1a;
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-warm: #FAF8F3;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-sage: #B8C4B8;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
 .quick-prompts {
   display: flex; align-items: center; gap: 10px;
@@ -31,10 +32,10 @@ $border: #1e293b;
 .prompts-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; &::-webkit-scrollbar { display: none; } }
 
 .prompt-chip {
-  padding: 6px 14px; background: $bg-elevated; border: 1px solid $border;
+  padding: 6px 14px; background: $bg-oat; border: 1px solid $border;
   border-radius: 20px; font-size: 12px; color: $text-secondary;
   cursor: pointer; white-space: nowrap; font-family: inherit;
   transition: all 0.25s ease;
-  &:hover { border-color: $brand-amber; color: $brand-amber; background: rgba(245,158,11,0.06); }
+  &:hover { border-color: $brand-brown; color: $brand-brown; background: rgba(245,158,11,0.06); }
 }
 </style>

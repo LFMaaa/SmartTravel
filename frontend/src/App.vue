@@ -13,7 +13,7 @@ import NotificationToast from '@/components/notification/NotificationToast.vue'
 
 const toastRef = ref<InstanceType<typeof NotificationToast> | null>(null)
 
-// 全局提供 toast 方法，任何组件可通过 inject 调用
+// 全局提供 toast 方法
 provide('toast', {
   success: (title: string, message?: string) => toastRef.value?.success(title, message),
   warning: (title: string, message?: string) => toastRef.value?.warning(title, message),

@@ -11,6 +11,7 @@ SERVICE_ROUTES = {
     "/search": "http://search-service:8003",
     "/payment": "http://payment-service:8004",
     "/notification": "http://notification-service:8005",
+    "/review": "http://review-service:8007",
 }
 
 
@@ -61,3 +62,8 @@ async def proxy_payment(request: Request, path: str):
 @proxy_router.api_route("/notification/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
 async def proxy_notification(request: Request, path: str):
     return await _proxy_request(request, SERVICE_ROUTES["/notification"], f"/{path}")
+
+
+@proxy_router.api_route("/review/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+async def proxy_review(request: Request, path: str):
+    return await _proxy_request(request, SERVICE_ROUTES["/review"], f"/{path}")

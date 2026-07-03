@@ -1,12 +1,12 @@
 <template>
-  <div class="generate-container">
+  <div class="generate-view">
     <div class="generate-panel">
-      <!-- Left: Chat section -->
+      <!-- Left: Chat Section -->
       <div class="chat-section">
         <ChatPanel :query="route.query.q as string" @generated="onGenerated" />
       </div>
 
-      <!-- Right: Preview section -->
+      <!-- Right: Preview Section -->
       <div class="preview-section">
         <ItineraryPreview v-if="itinerary" :itinerary="itinerary" />
 
@@ -17,9 +17,7 @@
               <div class="orbit-dot dot-2"></div>
               <div class="orbit-dot dot-3"></div>
             </div>
-            <div class="center-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
-            </div>
+            <div class="center-icon">🤖</div>
           </div>
 
           <h3>AI 行程规划助手</h3>
@@ -27,9 +25,7 @@
 
           <div class="empty-hints">
             <div v-for="h in hints" :key="h.label" class="hint-item">
-              <div class="hint-icon">
-                <svg viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path :d="h.path"/></svg>
-              </div>
+              <div class="hint-icon">{{ h.emoji }}</div>
               <span>{{ h.label }}</span>
             </div>
           </div>
@@ -53,7 +49,6 @@ const itinerary = ref<ItineraryResponse | null>(null)
 
 function onGenerated(result: ItineraryResponse) { itinerary.value = result }
 
-// 从编辑器返回时，从 Pinia store 恢复行程数据
 onMounted(() => {
   const stored = itineraryStore.currentItinerary
   if (stored && stored.days && stored.days.length > 0) {
@@ -62,86 +57,115 @@ onMounted(() => {
 })
 
 const hints = [
-  { label: '自然语言描述需求', path: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z' },
-  { label: '实时流式生成', path: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
-  { label: '自由调整编辑', path: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' },
+  { emoji: '💬', label: '自然语言描述需求' },
+  { emoji: '⚡', label: '实时流式生成' },
+  { emoji: '✏️', label: '自由调整编辑' },
 ]
 </script>
 
 <style scoped lang="scss">
-$bg-deep: #0a0e1a;
-$bg-card: #111827;
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$text-primary: #f1f5f9;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-warm: #FAF8F3;
+$bg-oat: #F5F0E8;
+$bg-white: #FFFFFF;
+$brand-brown: #A68B7A;
+$brand-nude: #E8D5D0;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
-.generate-container {
-  height: calc(100vh - 64px);
+.generate-view {
+  height: 100vh;
   padding: 20px;
-  background: $bg-deep;
+  background: $bg-warm;
 }
 
 .generate-panel {
-  display: flex; gap: 20px; height: 100%;
-  max-width: 1400px; margin: 0 auto;
+  display: flex;
+  gap: 20px;
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .chat-section {
-  flex: 1; min-width: 0; max-width: 480px;
-  background: $bg-card;
+  flex: 1;
+  min-width: 0;
+  max-width: 460px;
+  background: $bg-white;
   border-radius: 20px;
   border: 1px solid $border;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(166, 139, 122, 0.06);
 }
 
 .preview-section {
-  flex: 1.2; min-width: 0;
-  background: $bg-card;
+  flex: 1.2;
+  min-width: 0;
+  background: $bg-white;
   border-radius: 20px;
   border: 1px solid $border;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(166, 139, 122, 0.06);
 }
 
 .preview-empty {
-  height: 100%; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 60px 40px; text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  text-align: center;
 }
 
 .empty-animation {
-  position: relative; width: 180px; height: 180px; margin-bottom: 40px;
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin-bottom: 36px;
 }
 
 .orbit-ring {
-  position: absolute; inset: 0;
-  border: 2px dashed rgba(245, 158, 11, 0.15);
+  position: absolute;
+  inset: 0;
+  border: 2px dashed rgba(184, 196, 184, 0.3);
   border-radius: 50%;
   animation: rotate 20s linear infinite;
 
   .orbit-dot {
-    position: absolute; width: 10px; height: 10px; border-radius: 50%;
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #E8D5D0, #B8C4B8);
+
     &.dot-1 { top: -5px; left: 50%; transform: translateX(-50%); }
     &.dot-2 { bottom: 22%; right: -5px; }
     &.dot-3 { bottom: 22%; left: -5px; }
   }
 }
 
-@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
 .center-icon {
-  position: absolute; top: 50%; left: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  width: 72px; height: 72px;
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  border-radius: 20px;
-  display: flex; align-items: center; justify-content: center;
-  color: #0f172a;
-  box-shadow: 0 12px 32px rgba(245, 158, 11, 0.35);
+  width: 68px;
+  height: 68px;
+  background: linear-gradient(135deg, #E8D5D0, #B8C4B8);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  box-shadow: 0 12px 32px rgba(184, 196, 184, 0.35);
   animation: pulse 3s ease-in-out infinite;
 }
 
@@ -151,40 +175,55 @@ $border: #1e293b;
 }
 
 .preview-empty h3 {
-  font-size: 22px; font-weight: 700; color: $text-primary; margin-bottom: 10px;
+  font-size: 22px;
+  font-weight: 600;
+  color: $text-primary;
+  margin-bottom: 10px;
 }
 
 .preview-empty > p {
-  font-size: 14px; color: $text-muted; max-width: 300px; line-height: 1.6; margin-bottom: 40px;
+  font-size: 14px;
+  color: $text-muted;
+  max-width: 300px;
+  line-height: 1.6;
+  margin-bottom: 40px;
 }
 
-.empty-hints { display: flex; gap: 32px; }
+.empty-hints {
+  display: flex;
+  gap: 36px;
+}
 
 .hint-item {
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  font-size: 12px; color: $text-muted;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: $text-muted;
 
   .hint-icon {
-    width: 44px; height: 44px;
-    background: $bg-elevated;
+    width: 48px;
+    height: 48px;
+    background: $bg-oat;
     border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    color: $brand-amber;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
     border: 1px solid $border;
     transition: all 0.3s ease;
   }
 
   &:hover .hint-icon {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    color: #0f172a;
+    background: linear-gradient(135deg, #E8D5D0, #B8C4B8);
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
-    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(184, 196, 184, 0.35);
   }
 }
 
 @media (max-width: 768px) {
-  .generate-container { padding: 12px; height: auto; }
+  .generate-view { padding: 12px; height: auto; }
   .generate-panel { flex-direction: column; height: auto; }
   .chat-section { max-width: none; height: 500px; }
   .preview-section { height: 500px; }

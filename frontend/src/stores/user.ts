@@ -26,9 +26,9 @@ export const useUserStore = defineStore('user', () => {
     await fetchUser()
   }
 
-  // Password register — requires SMS verification code
-  async function register(phone: string, password: string, smsCode: string, nickname: string) {
-    const { data } = await userAPI.register(phone, password, smsCode, nickname)
+  // Password register — phone + password only, no SMS needed
+  async function register(phone: string, password: string, nickname: string) {
+    const { data } = await userAPI.register(phone, password, nickname)
     return data.data
   }
 

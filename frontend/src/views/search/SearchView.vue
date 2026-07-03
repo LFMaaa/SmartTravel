@@ -61,7 +61,7 @@
       <!-- Welcome -->
       <div v-else-if="!searched" class="welcome-state">
         <div class="welcome-grid">
-          <div v-for="item in popularSearches" :key="item.label" class="welcome-chip" @click="handleQuickSearch(item.keyword, item.city)">
+          <div v-for="item in popularSearches" :key="item.label" class="welcome-chip" @click="showPoiDetail(item.poiData)">
             <div class="chip-image-wrap">
               <img class="chip-image" :src="item.image" :alt="item.label" loading="lazy" />
             </div>
@@ -238,6 +238,15 @@
                   </div>
                 </div>
 
+                <!-- Reviews -->
+                <div class="detail-section">
+                  <div class="section-header">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
+                    <span>用户评价</span>
+                  </div>
+                  <ReviewSection :poi-id="detailPoi.id" />
+                </div>
+
                 <!-- Action buttons -->
                 <div class="detail-actions">
                   <button class="action-btn action-btn-primary">
@@ -268,6 +277,7 @@ import { useFavoritesStore } from '@/stores/favorites'
 import SearchBar from '@/components/search/SearchBar.vue'
 import SearchFilters from '@/components/search/SearchFilters.vue'
 import PoiCard from '@/components/search/PoiCard.vue'
+import ReviewSection from '@/components/review/ReviewSection.vue'
 import type { POIResult } from '@/types/search'
 
 const store = useSearchStore()
@@ -282,14 +292,22 @@ const detailVisible = ref(false)
 const detailPoi = ref<POIResult | null>(null)
 const quickSearches = ['故宫', '大熊猫', '迪士尼', '火锅', '长城']
 const popularSearches = [
-  { label: '故宫博物院', desc: '北京 · 世界遗产 · ¥60', keyword: '故宫', city: '北京', emoji: '🏯', image: '/assets/poi/gugong.png' },
-  { label: '成都大熊猫基地', desc: '成都 · 亲子必去 · ¥55', keyword: '大熊猫', city: '成都', emoji: '🐼', image: '/assets/poi/panda.png' },
-  { label: '上海迪士尼', desc: '上海 · 主题乐园 · ¥499', keyword: '迪士尼', city: '上海', emoji: '🏰', image: '/assets/poi/disney.png' },
-  { label: '西安兵马俑', desc: '西安 · 世界奇迹 · ¥120', keyword: '兵马俑', city: '西安', emoji: '🗿', image: '/assets/poi/bingmayong.png' },
-  { label: '外滩夜景', desc: '上海 · 免费 · 城市地标', keyword: '外滩', city: '上海', emoji: '🌃', image: '/assets/poi/waitan.png' },
-  { label: '宽窄巷子', desc: '成都 · 免费 · 美食街区', keyword: '宽窄巷子', city: '成都', emoji: '🏘️', image: '/assets/poi/kuanzhai.png' },
-  { label: '北京烤鸭', desc: '北京 · 美食 · ¥150', keyword: '烤鸭', city: '北京', emoji: '🦆', image: '/assets/poi/kaoya.png' },
-  { label: '成都火锅', desc: '成都 · 川菜 · ¥120', keyword: '火锅', city: '成都', emoji: '🍲', image: '/assets/poi/huoguo.png' },
+  { label: '故宫博物院', desc: '北京 · 世界遗产 · ¥60', keyword: '故宫', city: '北京', emoji: '🏯', image: '/assets/poi/gugong.png',
+    poiData: { id: 'pop-1', name: '故宫博物院', type: 'attraction', city: '北京', district: '东城区', rating: 4.8, price: 60, tags: ['世界遗产', '博物馆', '明清皇家'], description: '故宫又名紫禁城，是中国明清两代的皇家宫殿，也是世界上现存规模最大、保存最为完整的木质结构古建筑之一。占地面积约72万平方米，建筑面积约15万平方米，有大小宫殿七十多座，房屋九千余间。', address: '北京市东城区景山前街4号', opening_hours: '08:30 - 17:00（周一闭馆）', popularity_score: 980, lat: 39.9163, lng: 116.3972 } },
+  { label: '成都大熊猫基地', desc: '成都 · 亲子必去 · ¥55', keyword: '大熊猫', city: '成都', emoji: '🐼', image: '/assets/poi/panda.png',
+    poiData: { id: 'pop-2', name: '成都大熊猫繁育研究基地', type: 'attraction', city: '成都', district: '成华区', rating: 4.7, price: 55, tags: ['亲子游', '大熊猫', '自然生态'], description: '成都大熊猫繁育研究基地是世界著名的大熊猫迁地保护基地、科研繁育基地、公众教育基地和教育旅游基地。基地内常年饲养着约100只大熊猫。', address: '四川省成都市成华区外北三环熊猫大道1375号', opening_hours: '07:30 - 18:00', popularity_score: 920, lat: 30.7367, lng: 104.1451 } },
+  { label: '上海迪士尼', desc: '上海 · 主题乐园 · ¥499', keyword: '迪士尼', city: '上海', emoji: '🏰', image: '/assets/poi/disney.png',
+    poiData: { id: 'pop-3', name: '上海迪士尼乐园', type: 'attraction', city: '上海', district: '浦东新区', rating: 4.6, price: 499, tags: ['主题乐园', '亲子游', '梦幻世界'], description: '上海迪士尼乐园是中国内地首座迪士尼主题乐园，拥有米奇大街、奇想花园、探险岛、宝藏湾、明日世界、梦幻世界和玩具总动员七大主题园区。', address: '上海市浦东新区川沙镇黄赵路310号', opening_hours: '09:00 - 20:00（以当日为准）', popularity_score: 950, lat: 31.1434, lng: 121.6580 } },
+  { label: '西安兵马俑', desc: '西安 · 世界奇迹 · ¥120', keyword: '兵马俑', city: '西安', emoji: '🗿', image: '/assets/poi/bingmayong.png',
+    poiData: { id: 'pop-4', name: '秦始皇兵马俑博物馆', type: 'attraction', city: '西安', district: '临潼区', rating: 4.9, price: 120, tags: ['世界遗产', '历史文化', '秦朝'], description: '秦始皇陵兵马俑被誉为"世界第八大奇迹"，是秦始皇陵园中一组大型陪葬陶塑。三个坑共出土约8000件真人大小陶俑、陶马及大量青铜兵器。', address: '陕西省西安市临潼区秦陵北路', opening_hours: '08:30 - 17:00', popularity_score: 960, lat: 34.3847, lng: 109.2783 } },
+  { label: '外滩夜景', desc: '上海 · 免费 · 城市地标', keyword: '外滩', city: '上海', emoji: '🌃', image: '/assets/poi/waitan.png',
+    poiData: { id: 'pop-5', name: '外滩', type: 'attraction', city: '上海', district: '黄浦区', rating: 4.7, price: 0, tags: ['城市地标', '夜景免费', '万国建筑'], description: '外滩位于上海市中心区的黄浦江畔，是上海最具标志性的景点之一。全长1.5公里，南起延安东路，北至苏州河上的外白渡桥，东面即黄浦江，西面是旧上海金融、外贸机构的集中地。', address: '上海市黄浦区中山东一路', opening_hours: '全天开放', popularity_score: 890, lat: 31.2397, lng: 121.4900 } },
+  { label: '宽窄巷子', desc: '成都 · 免费 · 美食街区', keyword: '宽窄巷子', city: '成都', emoji: '🏘️', image: '/assets/poi/kuanzhai.png',
+    poiData: { id: 'pop-6', name: '宽窄巷子', type: 'attraction', city: '成都', district: '青羊区', rating: 4.5, price: 0, tags: ['美食街区', '老成都', '免费游览'], description: '宽窄巷子由宽巷子、窄巷子和井巷子三条平行排列的老式街道及其之间的四合院群落组成，是成都市三大历史文化保护区之一，集中了清末民初的建筑风格。', address: '四川省成都市青羊区金河路口宽窄巷子', opening_hours: '全天开放', popularity_score: 850, lat: 30.6719, lng: 104.0566 } },
+  { label: '北京烤鸭', desc: '北京 · 美食 · ¥150', keyword: '烤鸭', city: '北京', emoji: '🦆', image: '/assets/poi/kaoya.png',
+    poiData: { id: 'pop-7', name: '全聚德烤鸭店', type: 'restaurant', city: '北京', district: '东城区', rating: 4.4, price: 150, tags: ['北京烤鸭', '百年老字号', '京菜'], description: '全聚德创建于1864年，是享誉中外的中华老字号餐厅，以其挂炉烤鸭闻名于世。烤鸭色泽红润、肉质细嫩、味道醇厚，被誉为"天下第一鸭"。', address: '北京市东城区前门大街30号', opening_hours: '10:30 - 21:00', popularity_score: 820, lat: 39.9000, lng: 116.3970 } },
+  { label: '成都火锅', desc: '成都 · 川菜 · ¥120', keyword: '火锅', city: '成都', emoji: '🍲', image: '/assets/poi/huoguo.png',
+    poiData: { id: 'pop-8', name: '蜀大侠火锅', type: 'restaurant', city: '成都', district: '武侯区', rating: 4.6, price: 120, tags: ['四川火锅', '麻辣鲜香', '川菜'], description: '蜀大侠火锅源于成都，将传统川味火锅与武侠文化相结合，环境古朴典雅，锅底麻辣鲜香、回味悠长，是体验正宗成都火锅文化的绝佳选择。', address: '四川省成都市武侯区春熙路商圈', opening_hours: '11:00 - 次日02:00', popularity_score: 870, lat: 30.6526, lng: 104.0745 } },
 ]
 
 const typeLabel = (t: string) => ({ attraction: '景点', hotel: '酒店', restaurant: '餐厅' } as Record<string, string>)[t] || t
@@ -317,22 +335,23 @@ function showPoiDetail(poi: POIResult) { detailPoi.value = poi; detailVisible.va
 </script>
 
 <style scoped lang="scss">
-$bg-deep: #0a0e1a;
-$bg-card: #111827;
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$text-primary: #f1f5f9;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-warm: #FAF8F3;
+$bg-white: #FFFFFF;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
-.search-view { padding-bottom: var(--space-4xl); background: $bg-deep; min-height: 100vh; }
+.search-view { padding-bottom: var(--space-4xl); background: $bg-warm; min-height: 100vh; }
 
 .search-hero {
   position: relative; overflow: hidden;
   padding: var(--space-3xl) var(--space-lg) var(--space-2xl);
   text-align: center;
-  background: linear-gradient(180deg, $bg-card 0%, $bg-deep 100%);
+  background: linear-gradient(180deg, $bg-white 0%, $bg-warm 100%);
   border-bottom: 1px solid $border;
 }
 
@@ -354,13 +373,13 @@ $border: #1e293b;
   padding: 14px 0; margin-bottom: 20px;
   font-size: 14px; color: $text-secondary;
   strong { color: $text-primary; }
-  .stats-count { color: $brand-amber; font-weight: 600; }
+  .stats-count { color: $brand-brown; font-weight: 600; }
 }
 
 .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 
 .skeleton-card {
-  background: $bg-elevated; border-radius: 16px; border: 1px solid $border; overflow: hidden; height: 280px;
+  background: $bg-oat; border-radius: 16px; border: 1px solid $border; overflow: hidden; height: 280px;
   .sk-cover { height: 120px; }
   .sk-body { padding: 16px; }
   .sk-title { height: 20px; width: 60%; border-radius: 6px; margin-bottom: 10px; }
@@ -371,7 +390,7 @@ $border: #1e293b;
 
 .error-state {
   text-align: center; padding: 80px 20px; color: $text-secondary;
-  svg { color: $brand-amber; margin-bottom: 16px; }
+  svg { color: $brand-brown; margin-bottom: 16px; }
   h3 { font-size: 18px; color: $text-primary; margin-bottom: 8px; }
   p { margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto; }
 }
@@ -394,19 +413,19 @@ $border: #1e293b;
 .quick-searches { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 .quick-chip {
   padding: 8px 18px; border: 1px solid $border; border-radius: 20px;
-  background: $bg-elevated; color: $text-secondary; font-size: 13px;
+  background: $bg-oat; color: $text-secondary; font-size: 13px;
   cursor: pointer; font-family: inherit;
   transition: all 0.25s;
-  &:hover { border-color: $brand-amber; color: $brand-amber; }
+  &:hover { border-color: $brand-brown; color: $brand-brown; }
 }
 
 .welcome-state { padding: var(--space-xl) 0; }
 .welcome-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
 .welcome-chip {
   display: flex; flex-direction: column; align-items: center; gap: 10px;
-  padding: 28px 20px; background: $bg-elevated; border: 1px solid $border;
+  padding: 28px 20px; background: $bg-oat; border: 1px solid $border;
   border-radius: 16px; cursor: pointer; transition: all 0.3s ease;
-  &:hover { border-color: $brand-amber; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  &:hover { border-color: $brand-brown; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
 }
 .chip-image-wrap {
   width: 80px; height: 80px; border-radius: 14px;
@@ -422,23 +441,24 @@ $border: #1e293b;
 
 .pagination { display: flex; justify-content: center; margin-top: var(--space-2xl); }
 
-// === Fullscreen Detail Panel ===
+// === Fullscreen Detail Panel (Centered Modal) ===
 .detail-overlay {
   position: fixed; inset: 0; z-index: 2000;
-  background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
-  display: flex; justify-content: flex-end;
+  background: rgba(61,61,61,0.45); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
   -webkit-overflow-scrolling: touch;
 }
 .detail-panel {
-  width: 100%; max-width: 520px; height: 100%;
-  background: $bg-card; display: flex; flex-direction: column;
-  overflow: hidden;
-  box-shadow: -8px 0 40px rgba(0,0,0,0.5);
+  width: 680px; max-width: 92vw; height: 85vh; max-height: 820px;
+  background: $bg-white; display: flex; flex-direction: column;
+  overflow: hidden; border-radius: 22px;
+  box-shadow: 0 24px 72px rgba(0,0,0,0.2), 0 4px 16px rgba(0,0,0,0.08);
+  position: relative;
 }
 .detail-close {
-  position: absolute; top: 16px; right: 16px; z-index: 10;
+  position: absolute; top: 16px; right: 18px; z-index: 10;
   width: 36px; height: 36px; border-radius: 50%; border: none;
-  background: rgba(0,0,0,0.35); color: #fff;
+  background: rgba(0,0,0,0.3); color: #fff;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; backdrop-filter: blur(6px);
   transition: all 0.25s;
@@ -484,7 +504,7 @@ $border: #1e293b;
 }
 .detail-stat {
   flex: 1; display: flex; align-items: center; gap: 12px;
-  padding: 16px; background: $bg-elevated; border-radius: 14px;
+  padding: 16px; background: $bg-oat; border-radius: 14px;
   border: 1px solid $border;
 }
 .stat-icon-wrap {
@@ -503,7 +523,7 @@ $border: #1e293b;
   display: flex; align-items: center; gap: 3px;
 }
 .star-icon { color: $border; display: flex; &.filled { color: #f59e0b; } &.half { color: #f59e0b; opacity: 0.5; } }
-.stars-text { font-size: 13px; font-weight: 600; color: $brand-amber; margin-left: 8px; }
+.stars-text { font-size: 13px; font-weight: 600; color: $brand-brown; margin-left: 8px; }
 
 // Info sections
 .detail-section {
@@ -511,13 +531,13 @@ $border: #1e293b;
 }
 .section-header {
   display: flex; align-items: center; gap: 8px;
-  margin-bottom: 10px; color: $brand-amber; font-size: 13px; font-weight: 600;
+  margin-bottom: 10px; color: $brand-brown; font-size: 13px; font-weight: 600;
 }
 .section-text { font-size: 14px; color: $text-secondary; line-height: 1.7; margin: 0; }
 
 .section-desc-box {
   padding: 16px; border-radius: 12px;
-  background: $bg-elevated; border: 1px solid $border;
+  background: $bg-oat; border: 1px solid $border;
   p { margin: 0; font-size: 14px; color: $text-secondary; line-height: 1.85; }
 }
 
@@ -525,7 +545,7 @@ $border: #1e293b;
 .detail-tags-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .detail-tag-chip {
   padding: 6px 14px; border-radius: 20px;
-  font-size: 12px; font-weight: 500; color: $brand-amber;
+  font-size: 12px; font-weight: 500; color: $brand-brown;
   background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.15);
 }
 
@@ -543,24 +563,22 @@ $border: #1e293b;
   &:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(245,158,11,0.35); }
 }
 .action-btn-secondary {
-  background: $bg-elevated; color: $text-secondary; border: 1px solid $border;
-  &:hover { color: $brand-amber; border-color: rgba(245,158,11,0.3); }
+  background: $bg-oat; color: $text-secondary; border: 1px solid $border;
+  &:hover { color: $brand-brown; border-color: rgba(245,158,11,0.3); }
   &.favorited {
     color: #ef4444; border-color: rgba(239,68,68,0.25); background: rgba(239,68,68,0.08);
     &:hover { color: #f87171; border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.12); }
   }
 }
 
-// Panel slide animation
-.panel-slide-enter-active { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-.panel-slide-leave-active { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-.panel-slide-enter-from, .panel-slide-leave-to {
-  .detail-overlay { opacity: 0; }
-  .detail-panel { transform: translateX(100%); }
-}
+// Panel animation (centered fade+scale)
+.panel-slide-enter-active { transition: opacity 0.3s ease, transform 0.32s cubic-bezier(0.16, 1, 0.3, 1); }
+.panel-slide-leave-active { transition: opacity 0.2s ease, transform 0.22s cubic-bezier(0.4, 0, 0.2, 1); }
+.panel-slide-enter-from { opacity: 0; .detail-panel { transform: translateY(20px) scale(0.96); } }
+.panel-slide-leave-to { opacity: 0; .detail-panel { transform: translateY(-8px) scale(0.97); } }
 
 @media (max-width: 540px) {
-  .detail-panel { max-width: 100%; }
+  .detail-panel { width: 96vw; height: 92vh; max-height: none; border-radius: 18px; }
   .detail-hero { padding: 48px 20px 28px; min-height: 170px; }
   .detail-body-inner { padding: 20px; }
   .detail-stats { flex-direction: column; gap: 8px; }
@@ -569,19 +587,19 @@ $border: #1e293b;
 // === Dark theme el-pagination fine-tuning ===
 :deep(.el-pagination) {
   .el-pager li {
-    background: $bg-elevated; border-radius: 8px;
+    background: $bg-oat; border-radius: 8px;
     color: $text-secondary; font-weight: 500;
     min-width: 34px; height: 34px; line-height: 34px;
-    &:hover { color: $brand-amber; }
+    &:hover { color: $brand-brown; }
     &.is-active {
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
       color: #0f172a; font-weight: 700;
     }
   }
   button {
-    background: $bg-elevated; border-radius: 8px;
+    background: $bg-oat; border-radius: 8px;
     color: $text-secondary; height: 34px;
-    &:hover { color: $brand-amber; }
+    &:hover { color: $brand-brown; }
     &:disabled { color: $text-muted; opacity: 0.4; }
   }
 }

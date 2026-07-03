@@ -63,17 +63,18 @@ function goGenerate(query: string) { router.push({ name: 'itinerary-generate', q
 </script>
 
 <style scoped lang="scss">
-$bg-card: #111827;
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$text-primary: #f1f5f9;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-white: #FFFFFF;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
 .destination-section {
   padding: var(--space-4xl) 0;
-  background: $bg-card;
+  background: $bg-white;
 }
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-lg); }
@@ -81,7 +82,7 @@ $border: #1e293b;
 .destination-swiper { padding: 8px 4px 48px; }
 
 .dest-card {
-  background: $bg-elevated;
+  background: $bg-oat;
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
@@ -138,7 +139,7 @@ $border: #1e293b;
   padding: 3px 10px; border-radius: var(--radius-full);
   font-size: 11px; font-weight: 500;
   background: rgba(245, 158, 11, 0.08);
-  color: $brand-amber;
+  color: $brand-brown;
   border: 1px solid rgba(245, 158, 11, 0.12);
 }
 
@@ -148,5 +149,5 @@ $border: #1e293b;
 }
 
 :deep(.swiper-pagination-bullet) { background: $text-muted; opacity: 0.4; }
-:deep(.swiper-pagination-bullet-active) { background: $brand-amber; opacity: 1; }
+:deep(.swiper-pagination-bullet-active) { background: $brand-brown; opacity: 1; }
 </style>

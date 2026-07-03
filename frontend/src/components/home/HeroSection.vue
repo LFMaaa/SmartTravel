@@ -103,16 +103,16 @@ function quickStart(text: string) {
 </script>
 
 <style scoped lang="scss">
-$bg-deep: #0a0e1a;
-$bg-card: #111827;
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$brand-amber-light: #fbbf24;
-$brand-blue: #3b82f6;
-$text-primary: #f1f5f9;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-warm: #FAF8F3;
+$bg-white: #FFFFFF;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-brown-light: #C4A89A;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
 .hero-section {
   position: relative;
@@ -122,7 +122,7 @@ $border: #1e293b;
   justify-content: center;
   overflow: hidden;
   padding: var(--space-4xl) var(--space-lg);
-  background: $bg-deep;
+  background: $bg-warm;
 }
 
 .hero-bg {
@@ -164,19 +164,19 @@ $border: #1e293b;
   border: 1px solid rgba(245, 158, 11, 0.15);
   border-radius: var(--radius-full);
   font-size: 13px; font-weight: 600;
-  color: $brand-amber;
+  color: $brand-brown;
   margin-bottom: var(--space-xl);
 }
 
 .badge-dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: $brand-amber;
+  background: $brand-brown;
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 4px $brand-amber; }
-  50% { box-shadow: 0 0 12px $brand-amber, 0 0 24px rgba(245,158,11,0.3); }
+  0%, 100% { box-shadow: 0 0 4px $brand-brown; }
+  50% { box-shadow: 0 0 12px $brand-brown, 0 0 24px rgba(245,158,11,0.3); }
 }
 
 .hero-headline {
@@ -186,7 +186,7 @@ $border: #1e293b;
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, $brand-amber-light, $brand-amber);
+  background: linear-gradient(135deg, $brand-brown-light, $brand-brown);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -203,7 +203,7 @@ $border: #1e293b;
 
 .search-wrapper {
   display: flex; align-items: center;
-  background: $bg-elevated;
+  background: $bg-oat;
   border: 1.5px solid $border;
   border-radius: 14px;
   padding: 5px 5px 5px 16px;
@@ -211,7 +211,7 @@ $border: #1e293b;
   height: 64px;
 
   &:focus-within {
-    border-color: $brand-amber;
+    border-color: $brand-brown;
     box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.08);
   }
 }
@@ -245,7 +245,7 @@ $border: #1e293b;
   font-size: 15px; font-weight: 600;
   cursor: pointer;
   color: #0f172a;
-  background: linear-gradient(135deg, $brand-amber-light, $brand-amber);
+  background: linear-gradient(135deg, $brand-brown-light, $brand-brown);
   box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
@@ -282,7 +282,7 @@ $border: #1e293b;
 
 .suggest-chip {
   padding: 7px 18px;
-  background: $bg-elevated;
+  background: $bg-oat;
   border: 1px solid $border;
   border-radius: var(--radius-full);
   font-size: 13px; color: $text-muted;
@@ -290,8 +290,8 @@ $border: #1e293b;
   transition: all 0.25s ease;
 
   &:hover {
-    border-color: $brand-amber;
-    color: $brand-amber;
+    border-color: $brand-brown;
+    color: $brand-brown;
     background: rgba(245, 158, 11, 0.06);
   }
 }
@@ -306,7 +306,7 @@ $border: #1e293b;
 }
 
 .stat-item { text-align: center; }
-.stat-value { display: block; font-size: 26px; font-weight: 800; color: $brand-amber; }
+.stat-value { display: block; font-size: 26px; font-weight: 800; color: $brand-brown; }
 .stat-label { display: block; font-size: 11px; color: $text-muted; margin-top: 2px; }
 .stat-divider { width: 1px; height: 36px; background: $border; }
 

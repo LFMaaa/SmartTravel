@@ -120,14 +120,15 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
-$bg-deep: #0a0e1a;
-$bg-card: #111827;
-$bg-elevated: #1a2235;
-$brand-amber: #f59e0b;
-$text-primary: #f1f5f9;
-$text-secondary: #94a3b8;
-$text-muted: #64748b;
-$border: #1e293b;
+$bg-warm: #FAF8F3;
+$bg-white: #FFFFFF;
+$bg-oat: #F5F0E8;
+$brand-brown: #A68B7A;
+$brand-sage: #B8C4B8;
+$text-primary: #3D3D3D;
+$text-secondary: #6B6B6B;
+$text-muted: #B8B0A8;
+$border: #E8D5D0;
 
 .app-header {
   position: sticky;
@@ -203,7 +204,7 @@ $border: #1e293b;
     }
 
     &.active {
-      color: $brand-amber;
+      color: $brand-brown;
       background: rgba(245, 158, 11, 0.08);
     }
   }
@@ -233,7 +234,7 @@ $border: #1e293b;
 
   &:hover {
     background: rgba(245, 158, 11, 0.08);
-    color: $brand-amber;
+    color: $brand-brown;
   }
 }
 
@@ -258,7 +259,7 @@ $border: #1e293b;
   top: calc(100% + 10px);
   right: 0;
   min-width: 210px;
-  background: $bg-card;
+  background: $bg-white;
   border: 1px solid $border;
   border-radius: 16px;
   padding: 8px;
@@ -322,7 +323,7 @@ $border: #1e293b;
 
 .itinerary-icon {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.15));
-  color: $brand-amber;
+  color: $brand-brown;
 }
 
 .orders-icon {
