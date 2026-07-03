@@ -120,6 +120,8 @@ services:
         condition: service_started
       notification-service:
         condition: service_started
+      review-service:
+        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "curl -s http://localhost:8000/health | grep -q ok"]
       interval: 15s
@@ -167,6 +169,12 @@ services:
       - REDIS_URL=redis://redis:6379/0
       # 密钥
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:-smarttravel-prod-secret-key}
+      # LangChain / DeepSeek V3（主要 AI 引擎）
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - DEEPSEEK_BASE_URL=${DEEPSEEK_BASE_URL:-https://api.deepseek.com/v1}
+      # 高德地图 API
+      - AMAP_API_KEY=${AMAP_API_KEY}
+      # Dify（已废弃，保留兼容）
       - DIFY_BASE_URL=${DIFY_BASE_URL:-http://host.docker.internal}
       - DIFY_INTENT_PARSER_KEY=${DIFY_INTENT_PARSER_KEY}
       - DIFY_ITINERARY_GENERATOR_KEY=${DIFY_ITINERARY_GENERATOR_KEY}
@@ -250,6 +258,24 @@ services:
       mysql:
         condition: service_healthy
       rabbitmq:
+        condition: service_healthy
+
+  review-service:
+    build:
+      context: ../backend
+      dockerfile: review-service/Dockerfile
+    container_name: smarttravel-review-service
+    restart: unless-stopped
+    ports:
+      - "8007:8007"
+    environment:
+      # Docker 网络覆盖
+      - DATABASE_URL=mysql+aiomysql://${MYSQL_USER:-smarttravel}:${MYSQL_PASSWORD:-smarttravel123}@mysql:3306/${MYSQL_DATABASE:-smarttravel}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-smarttravel-prod-secret-key}
+    networks:
+      - smarttravel-net
+    depends_on:
+      mysql:
         condition: service_healthy
 
   # ==================== 前端 ====================
