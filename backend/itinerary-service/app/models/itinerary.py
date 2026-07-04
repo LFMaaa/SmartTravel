@@ -78,7 +78,7 @@ class DayActivity(Base, TimestampMixin):
     transportation: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, comment="walk/drive/bus/metro/taxi")
     travel_time_from_prev: Mapped[int] = mapped_column(Integer, default=0, comment="从上个活动过来的交通时间（分钟）")
     ai_reason: Mapped[Optional[str]] = mapped_column(Text, nullable=True, comment="AI 推荐理由")
-    extra_data: Mapped[Optional[str]] = mapped_column(JSON, nullable=True, comment="扩展字段")
+    extra_data: Mapped[Optional[str]] = mapped_column("metadata", JSON, nullable=True, comment="扩展字段")
 
     # 关联
     day: Mapped["ItineraryDay"] = relationship("ItineraryDay", back_populates="activities")

@@ -27,6 +27,8 @@ CREATE TABLE IF NOT EXISTS users (
     salt            VARCHAR(32)  DEFAULT NULL         COMMENT '密码盐值',
     sms_code        VARCHAR(6)   DEFAULT NULL         COMMENT '短信验证码',
     sms_code_expires_at DATETIME DEFAULT NULL         COMMENT '短信验证码过期时间',
+    is_pro          BOOLEAN      DEFAULT FALSE        COMMENT '是否为Pro会员',
+    pro_expire_at   DATETIME     DEFAULT NULL         COMMENT 'Pro会员过期时间',
     last_login_at   DATETIME     DEFAULT NULL,
     created_at      DATETIME     DEFAULT CURRENT_TIMESTAMP,
     updated_at      DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

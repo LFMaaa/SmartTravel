@@ -48,3 +48,12 @@ dump.rdb
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Build / temp artifacts
+build_log.txt
+debug.log
+test_itinerary.json
+test_itinerary_api.py
+smarttravle/
+.vscodesftp.json
+fix_env_files.sh

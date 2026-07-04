@@ -3,12 +3,13 @@ import uuid
 import logging
 from datetime import date, timedelta
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from common.schemas import APIResponse
+from common.auth import decode_token
 
 from ..database import get_db, is_db_available
 from ..services.ai_service import AIService
@@ -21,6 +22,17 @@ logger = logging.getLogger(__name__)
 
 # In-memory storage fallback when MySQL is unavailable
 _memory_store: dict[str, dict] = {}
+
+
+def _extract_user_id(request: Request, fallback: str = "") -> str:
+    """从 Authorization header 解析 JWT 获取真实 user_id"""
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header.replace("Bearer ", "")
+        payload = decode_token(token)
+        if payload and payload.sub:
+            return payload.sub
+    return fallback or "anonymous"
 
 
 # ---------- Request models ----------
@@ -44,13 +56,15 @@ class ApplyReplanRequest(BaseModel):
 # ---------- Routes ----------
 
 @router.post("/generate", response_model=APIResponse)
-async def generate_itinerary(req: GenerateRequest):
+async def generate_itinerary(req: GenerateRequest, request: Request):
     """AI 智能行程生成 — 优先 Dify，不可用时降级 mock"""
+    # 从 JWT 提取真实 user_id，忽略请求体中的 user_id
+    user_id = _extract_user_id(request, req.user_id)
     if is_db_available():
         from ..database import async_session_factory
         async with async_session_factory() as db:
             try:
-                itinerary = await AIService.generate(db, req.user_id, req.query, req.itinerary_id)
+                itinerary = await AIService.generate(db, user_id, req.query, req.itinerary_id)
                 await db.commit()
                 return APIResponse(data=itinerary)
             except Exception:
@@ -58,12 +72,12 @@ async def generate_itinerary(req: GenerateRequest):
                 raise
     else:
         # Memory mode: still try Dify first, save to memory
-        itinerary = await AIService.generate(None, req.user_id, req.query, req.itinerary_id)
+        itinerary = await AIService.generate(None, user_id, req.query, req.itinerary_id)
         itinerary_id = itinerary.get("id") or str(uuid.uuid4())
         if "id" not in itinerary:
             itinerary["id"] = itinerary_id
         if "user_id" not in itinerary:
-            itinerary["user_id"] = req.user_id
+            itinerary["user_id"] = user_id
         if "status" not in itinerary:
             itinerary["status"] = "draft"
         if "version" not in itinerary:
@@ -77,15 +91,16 @@ async def generate_itinerary(req: GenerateRequest):
 
 
 @router.post("/generate/stream")
-async def generate_itinerary_stream(req: GenerateRequest):
+async def generate_itinerary_stream(req: GenerateRequest, request: Request):
     """AI 行程生成（SSE 流式输出）"""
+    user_id = _extract_user_id(request, req.user_id)
     if is_db_available():
         from ..database import async_session_factory
 
         async def stream_with_db():
             async with async_session_factory() as db:
                 try:
-                    async for event in AIService.generate_stream(db, req.user_id, req.query, req.itinerary_id):
+                    async for event in AIService.generate_stream(db, user_id, req.query, req.itinerary_id):
                         yield event
                     await db.commit()
                 except Exception:
@@ -96,13 +111,13 @@ async def generate_itinerary_stream(req: GenerateRequest):
     else:
         # Memory mode
         async def stream_memory():
-            async for event in AIService.generate_stream(None, req.user_id, req.query, req.itinerary_id):
+            async for event in AIService.generate_stream(None, user_id, req.query, req.itinerary_id):
                 yield event
             # Save to memory after stream
             mock = AIService._build_mock(req.query)
             itinerary_id = str(uuid.uuid4())
             mock["id"] = itinerary_id
-            mock["user_id"] = req.user_id
+            mock["user_id"] = user_id
             mock["status"] = "draft"
             mock["version"] = 1
             mock["created_at"] = date.today().isoformat()
@@ -203,24 +218,27 @@ async def replan_itinerary(itinerary_id: str, req: ReplanRequest):
 
 @router.get("/", response_model=APIResponse)
 async def list_itineraries(
-    user_id: str = Query(..., description="用户ID"),
+    request: Request,
+    user_id: str = Query("", description="用户ID"),
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=50),
     status: str | None = Query(None, description="行程状态筛选"),
 ):
     """获取用户的行程列表"""
+    # 优先从 JWT 提取 user_id
+    uid = _extract_user_id(request, user_id)
     if is_db_available():
         from ..database import async_session_factory
         async with async_session_factory() as db:
             try:
-                result = await ItineraryCRUDService.list_itineraries(db, user_id, page, page_size, status)
+                result = await ItineraryCRUDService.list_itineraries(db, uid, page, page_size, status)
                 await db.commit()
                 return APIResponse(data=result)
             except Exception:
                 await db.rollback()
                 raise
     else:
-        items = [v for v in _memory_store.values() if v.get("user_id") == user_id]
+        items = [v for v in _memory_store.values() if v.get("user_id") == uid]
         return APIResponse(data={
             "items": items[(page - 1) * page_size: page * page_size],
             "total": len(items),

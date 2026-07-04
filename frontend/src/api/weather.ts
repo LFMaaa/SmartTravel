@@ -49,7 +49,7 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherForecast 
     const res = await fetch(`${BASE_URL}/weatherInfo?${params.toString()}`)
     const data: WeatherResponse = await res.json()
 
-    if (data.status === '1' && data.forecasts?.length > 0) {
+    if (data.status === '1' && data.forecasts && data.forecasts.length > 0) {
       return data.forecasts[0]
     }
 

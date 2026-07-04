@@ -7,6 +7,7 @@ from typing import Optional
 from fastapi import HTTPException
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from ..models.itinerary import Itinerary, ItineraryDay, DayActivity, ItineraryVersion
 
@@ -77,7 +78,7 @@ class ItineraryCRUDService:
                     transportation=act_data.get("transportation"),
                     travel_time_from_prev=act_data.get("travel_time_from_prev", 0),
                     ai_reason=act_data.get("ai_reason"),
-                    metadata=act_data.get("metadata") or act_data.get("tags"),
+                    extra_data=act_data.get("metadata") or act_data.get("tags"),
                 )
                 db.add(activity)
 
@@ -95,7 +96,7 @@ class ItineraryCRUDService:
                     duration_minutes=0,
                     estimated_cost=Decimal(str(hotel.get("price", 0))),
                     sort_order=0,
-                    metadata=hotel.get("tags"),
+                    extra_data=hotel.get("tags"),
                 )
                 db.add(hotel_activity)
 
@@ -115,7 +116,9 @@ class ItineraryCRUDService:
     async def get_itinerary(db: AsyncSession, itinerary_id: str) -> dict:
         """获取行程详情（含天和活动）"""
         result = await db.execute(
-            select(Itinerary).where(Itinerary.id == itinerary_id)
+            select(Itinerary)
+            .options(selectinload(Itinerary.days_list).selectinload(ItineraryDay.activities))
+            .where(Itinerary.id == itinerary_id)
         )
         itinerary = result.scalar_one_or_none()
         if not itinerary:
@@ -128,7 +131,9 @@ class ItineraryCRUDService:
         status: str | None = None,
     ) -> dict:
         """获取用户行程列表（分页）"""
-        query = select(Itinerary).where(Itinerary.user_id == user_id)
+        query = select(Itinerary).options(
+            selectinload(Itinerary.days_list).selectinload(ItineraryDay.activities)
+        ).where(Itinerary.user_id == user_id)
         count_query = select(func.count(Itinerary.id)).where(Itinerary.user_id == user_id)
 
         if status:
@@ -158,7 +163,11 @@ class ItineraryCRUDService:
     @staticmethod
     async def update_itinerary(db: AsyncSession, itinerary_id: str, update_data: dict) -> dict:
         """更新行程（编辑后保存，创建新版本）"""
-        result = await db.execute(select(Itinerary).where(Itinerary.id == itinerary_id))
+        result = await db.execute(
+            select(Itinerary)
+            .options(selectinload(Itinerary.days_list).selectinload(ItineraryDay.activities))
+            .where(Itinerary.id == itinerary_id)
+        )
         itinerary = result.scalar_one_or_none()
         if not itinerary:
             raise HTTPException(status_code=404, detail="行程不存在")
@@ -205,7 +214,7 @@ class ItineraryCRUDService:
                         transportation=act_data.get("transportation"),
                         travel_time_from_prev=act_data.get("travel_time_from_prev", 0),
                         ai_reason=act_data.get("ai_reason"),
-                        metadata=act_data.get("metadata") or act_data.get("tags"),
+                        extra_data=act_data.get("metadata") or act_data.get("tags"),
                     )
                     db.add(activity)
 
@@ -222,7 +231,7 @@ class ItineraryCRUDService:
                         duration_minutes=0,
                         estimated_cost=Decimal(str(hotel.get("price", 0))),
                         sort_order=0,
-                        metadata=hotel.get("tags"),
+                        extra_data=hotel.get("tags"),
                     )
                     db.add(hotel_activity)
 
@@ -250,7 +259,11 @@ class ItineraryCRUDService:
     @staticmethod
     async def delete_itinerary(db: AsyncSession, itinerary_id: str) -> None:
         """删除行程（级联删除天、活动、版本）"""
-        result = await db.execute(select(Itinerary).where(Itinerary.id == itinerary_id))
+        result = await db.execute(
+            select(Itinerary)
+            .options(selectinload(Itinerary.days_list).selectinload(ItineraryDay.activities))
+            .where(Itinerary.id == itinerary_id)
+        )
         itinerary = result.scalar_one_or_none()
         if not itinerary:
             raise HTTPException(status_code=404, detail="行程不存在")
@@ -274,7 +287,7 @@ class ItineraryCRUDService:
                 "version_number": v.version_number,
                 "change_description": v.change_description,
                 "trigger_event": v.trigger_event,
-                "created_at": v.created_at.isoformat() if v.created_at else None,
+                "created_at": ItineraryCRUDService._safe_iso(v.created_at),
             }
             for v in versions
         ]
@@ -306,6 +319,15 @@ class ItineraryCRUDService:
     # ==================== 内部工具 ====================
 
     @staticmethod
+    def _safe_iso(dt):
+        """安全 ISO 格式化 — 兼容 date/datetime 对象和字符串"""
+        if dt is None:
+            return None
+        if isinstance(dt, str):
+            return dt
+        return dt.isoformat()
+
+    @staticmethod
     async def _create_version_snapshot(
         db, itinerary_id: str,
         version_number: int,
@@ -313,8 +335,12 @@ class ItineraryCRUDService:
         trigger_event: str = "",
     ) -> ItineraryVersion:
         """创建行程版本快照"""
-        # 获取当前完整行程数据
-        result = await db.execute(select(Itinerary).where(Itinerary.id == itinerary_id))
+        # 获取当前完整行程数据（预加载关联避免懒加载）
+        result = await db.execute(
+            select(Itinerary)
+            .options(selectinload(Itinerary.days_list).selectinload(ItineraryDay.activities))
+            .where(Itinerary.id == itinerary_id)
+        )
         itinerary = result.scalar_one_or_none()
         if not itinerary:
             return None
@@ -334,28 +360,29 @@ class ItineraryCRUDService:
 
     @staticmethod
     def _itinerary_to_dict(itinerary: Itinerary) -> dict:
+        _iso = ItineraryCRUDService._safe_iso
         return {
             "id": itinerary.id,
             "user_id": itinerary.user_id,
             "title": itinerary.title,
             "destination": itinerary.destination,
-            "start_date": itinerary.start_date.isoformat() if itinerary.start_date else None,
-            "end_date": itinerary.end_date.isoformat() if itinerary.end_date else None,
+            "start_date": _iso(itinerary.start_date),
+            "end_date": _iso(itinerary.end_date),
             "days_count": itinerary.days,
             "total_budget": float(itinerary.total_budget) if itinerary.total_budget else None,
             "status": itinerary.status,
             "source": itinerary.source,
             "dify_workflow_run_id": itinerary.dify_workflow_run_id,
             "raw_input": itinerary.raw_input,
-            "created_at": itinerary.created_at.isoformat() if itinerary.created_at else None,
-            "updated_at": itinerary.updated_at.isoformat() if itinerary.updated_at else None,
+            "created_at": _iso(itinerary.created_at),
+            "updated_at": _iso(itinerary.updated_at),
             "version": 1,
             "days": [
                 {
                     "id": day.id,
                     "day_index": day.day_number,
                     "day_number": day.day_number,
-                    "date": day.date.isoformat() if day.date else None,
+                    "date": _iso(day.date),
                     "weather": day.weather,
                     "day_notes": day.day_notes,
                     "activities": [
@@ -378,8 +405,8 @@ class ItineraryCRUDService:
                             "transportation": act.transportation,
                             "travel_time_from_prev": act.travel_time_from_prev,
                             "ai_reason": act.ai_reason,
-                            "tags": act.metadata if isinstance(act.metadata, list) else [],
-                            "metadata": act.metadata,
+                            "tags": act.extra_data if isinstance(act.extra_data, list) else [],
+                            "metadata": act.extra_data,
                         }
                         for act in (day.activities or []) if act.activity_type != "hotel"
                     ],
@@ -391,9 +418,10 @@ class ItineraryCRUDService:
                             "lat": float(act.latitude) if act.latitude else None,
                             "lng": float(act.longitude) if act.longitude else None,
                             "price": float(act.estimated_cost),
-                            "tags": act.metadata if isinstance(act.metadata, list) else [],
-                        })
-                        for act in (day.activities or []) if act.activity_type == "hotel"
+                            "tags": act.extra_data if isinstance(act.extra_data, list) else [],
+                        }
+                        for act in (day.activities or []) if act.activity_type == "hotel"),
+                        None,
                     ),
                 }
                 for day in (itinerary.days_list or [])

@@ -118,14 +118,14 @@
               <label class="input-label">手机号</label>
               <div class="input-wrapper">
                 <span class="input-prefix">📱</span>
-                <input v-model="form.phone" type="tel" class="input-field" placeholder="请输入手机号" maxlength="11" />
+                <input v-model="form.phone" type="tel" class="input-field" placeholder="请输入手机号" maxlength="11" autocomplete="tel" />
               </div>
             </div>
             <div class="input-group">
               <label class="input-label">密码</label>
               <div class="input-wrapper">
                 <span class="input-prefix">🔒</span>
-                <input v-model="form.password" :type="showPassword ? 'text' : 'password'" class="input-field" placeholder="请输入密码" />
+                <input v-model="form.password" :type="showPassword ? 'text' : 'password'" class="input-field" placeholder="请输入密码" autocomplete="current-password" />
                 <button type="button" class="input-suffix" @click="showPassword = !showPassword">
                   {{ showPassword ? '🙈' : '👁️' }}
                 </button>
@@ -151,7 +151,7 @@
               <label class="input-label">手机号</label>
               <div class="input-wrapper">
                 <span class="input-prefix">📱</span>
-                <input v-model="form.phone" type="tel" class="input-field" placeholder="请输入手机号" maxlength="11" />
+                <input v-model="form.phone" type="tel" class="input-field" placeholder="请输入手机号" maxlength="11" autocomplete="tel" />
               </div>
             </div>
             <div class="input-group">

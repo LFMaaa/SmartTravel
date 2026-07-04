@@ -233,11 +233,11 @@ class SmsService:
             raise RuntimeError("短信服务依赖包未安装，请联系管理员")
         except RuntimeError as exc:
             msg = str(exc)
-            # 权限不足或配置错误 → 自动回退到开发模式
-            if "NoPermission" in msg or "Forbidden" in msg or "not authorized" in msg.lower():
+            # 权限不足、AccessKey 无效或配置错误 → 自动回退到开发模式
+            if any(k in msg for k in ["NoPermission", "Forbidden", "not authorized", "InvalidAccessKeyId", "AccessKeyId"]):
                 logger.warning(
-                    f"[SMS] 阿里云 RAM 权限不足，回退到开发模式。"
-                    f"请在 RAM 控制台为子账号添加 dypns:SendSmsVerifyCode 或 dysms:SendSms 权限。"
+                    f"[SMS] 阿里云 AccessKey 或权限问题，回退到开发模式。"
+                    f"请在 RAM 控制台检查 AccessKey 是否有效，并为子账号添加 dypns:SendSmsVerifyCode 或 dysms:SendSms 权限。"
                     f"手机号: {phone}"
                 )
                 if not code:
@@ -247,9 +247,9 @@ class SmsService:
             raise
         except Exception as exc:
             msg = str(exc)
-            if "NoPermission" in msg or "Forbidden" in msg or "not authorized" in msg.lower():
+            if any(k in msg for k in ["NoPermission", "Forbidden", "not authorized", "InvalidAccessKeyId", "AccessKeyId"]):
                 logger.warning(
-                    f"[SMS] 阿里云 RAM 权限不足，回退到开发模式。手机号: {phone}"
+                    f"[SMS] 阿里云 AccessKey 或权限问题，回退到开发模式。手机号: {phone}"
                 )
                 if not code:
                     code = str(random.randint(100000, 999999))

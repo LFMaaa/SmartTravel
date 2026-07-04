@@ -246,10 +246,10 @@ const emit = defineEmits<{
 const isNew = ref(!props.activity)
 
 const typeOptions = [
-  { value: 'attraction', label: '景点' },
-  { value: 'restaurant', label: '餐饮' },
-  { value: 'hotel', label: '酒店' },
-  { value: 'transport', label: '交通' },
+  { value: 'attraction' as const, label: '景点' },
+  { value: 'restaurant' as const, label: '餐饮' },
+  { value: 'hotel' as const, label: '酒店' },
+  { value: 'transport' as const, label: '交通' },
 ]
 
 function typeLabel(t: string) {

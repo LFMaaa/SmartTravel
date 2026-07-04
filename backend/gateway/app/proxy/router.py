@@ -15,10 +15,10 @@ SERVICE_ROUTES = {
 }
 
 
-async def _proxy_request(request: Request, service_url: str, path: str):
+async def _proxy_request(request: Request, service_url: str):
     """通用代理转发"""
     async with httpx.AsyncClient(timeout=60.0) as client:
-        target_url = f"{service_url}{path}"
+        target_url = f"{service_url}{request.url.path}"
         body = await request.body()
         headers = dict(request.headers)
         headers.pop("host", None)
@@ -40,30 +40,30 @@ async def _proxy_request(request: Request, service_url: str, path: str):
 
 
 @proxy_router.api_route("/user/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-async def proxy_user(request: Request, path: str):
-    return await _proxy_request(request, SERVICE_ROUTES["/user"], f"/{path}")
+async def proxy_user(request: Request):
+    return await _proxy_request(request, SERVICE_ROUTES["/user"])
 
 
 @proxy_router.api_route("/itinerary/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-async def proxy_itinerary(request: Request, path: str):
-    return await _proxy_request(request, SERVICE_ROUTES["/itinerary"], f"/{path}")
+async def proxy_itinerary(request: Request):
+    return await _proxy_request(request, SERVICE_ROUTES["/itinerary"])
 
 
 @proxy_router.api_route("/search/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-async def proxy_search(request: Request, path: str):
-    return await _proxy_request(request, SERVICE_ROUTES["/search"], f"/{path}")
+async def proxy_search(request: Request):
+    return await _proxy_request(request, SERVICE_ROUTES["/search"])
 
 
 @proxy_router.api_route("/payment/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-async def proxy_payment(request: Request, path: str):
-    return await _proxy_request(request, SERVICE_ROUTES["/payment"], f"/{path}")
+async def proxy_payment(request: Request):
+    return await _proxy_request(request, SERVICE_ROUTES["/payment"])
 
 
 @proxy_router.api_route("/notification/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-async def proxy_notification(request: Request, path: str):
-    return await _proxy_request(request, SERVICE_ROUTES["/notification"], f"/{path}")
+async def proxy_notification(request: Request):
+    return await _proxy_request(request, SERVICE_ROUTES["/notification"])
 
 
 @proxy_router.api_route("/review/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-async def proxy_review(request: Request, path: str):
-    return await _proxy_request(request, SERVICE_ROUTES["/review"], f"/{path}")
+async def proxy_review(request: Request):
+    return await _proxy_request(request, SERVICE_ROUTES["/review"])
